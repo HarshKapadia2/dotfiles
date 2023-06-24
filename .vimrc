@@ -1,4 +1,4 @@
-" This base template has been taken from 'The Missing Semester of Your CS Education' that can be found at https://missing.csail.mit.edu/2020/editors/#:~:text=Download%20our%20config%20here%20and%20save%20it%20to%20~/.vimrc.
+" This base template has been modified and taken from 'The Missing Semester of Your CS Education' that can be found at https://missing.csail.mit.edu/2020/editors/#:~:text=Download%20our%20config%20here%20and%20save%20it%20to%20~/.vimrc.
 
 " Comments in Vimscript start with a `"`.
 
@@ -54,6 +54,9 @@ set smartcase
 
 " Enable searching as you type, rather than waiting till you press enter.
 set incsearch
+
+" Highlight search matches
+set hlsearch
 
 " Unbind some useless/annoying default key bindings.
 nmap Q <Nop> " 'Q' in normal mode enters Ex mode. You almost never want this.

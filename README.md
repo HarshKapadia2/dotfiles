@@ -25,6 +25,7 @@ Packages installed
 -   `git`
 -   `man`
 -   `net-tools` (For `ifconfig`)
+-   `tmux`
 -   `vim`
 
 OSs supported
@@ -58,10 +59,11 @@ $ ls -al ~
 
 ## Dotfiles Present
 
--   [clang-format](https://clang.llvm.org/docs/ClangFormat.html): [.clang-format](.clang-format)
--   [Git](https://git-scm.com): [.gitconfig](.gitconfig)
--   [Prettier](https://prettier.io): [.prettierrc](.prettierrc)
--   [Vim](https://www.vim.org): [.vimrc](.vimrc)
+-   [clang-format](https://clang.llvm.org/docs/ClangFormat.html): [`.clang-format`](.clang-format)
+-   [Git](https://git-scm.com): [`.gitconfig`](.gitconfig)
+-   [Prettier](https://prettier.io): [`.prettierrc`](.prettierrc)
+-   [tmux](https://tmux.github.io): [`.tmux.conf`](.tmux.conf)
+-   [Vim](https://www.vim.org): [`.vimrc`](.vimrc)
 
 ## Resources
 

@@ -1,0 +1,88 @@
+#! /bin/bash
+
+set -o pipefail -E -e -u;
+
+FALSE=0;
+TRUE=1;
+
+dotfiles_repo_path="$HOME/dotfiles";
+
+is_force_setup=${FALSE};
+is_install_pkg=${FALSE};
+
+# Check script execution directory
+if [[ "$(pwd)" != "${dotfiles_repo_path}" ]]; then
+	echo "Error: The script should be executed from ${dotfiles_repo_path} but was executed from $(pwd).";
+	exit 1;
+fi;
+
+# Handle command-line arguments
+if [[ "$#" > 0 ]]; then
+	while [[ "$#" -gt 0 ]]; do
+		case "$1" in
+			"--force-setup")
+				is_force_setup=${TRUE};
+				shift;
+				;;
+			"--install-pkg")
+				is_install_pkg=${TRUE};
+				shift;
+				;;
+			*)
+				echo "";
+				echo "NOTE: Ignoring invalid argument $1.";
+				echo "";
+				shift;
+				;;
+		esac;
+	done;
+fi;
+
+# Install packages
+if [[ "${is_install_pkg}" == "${TRUE}" ]]; then
+	if command -v "apt-get"; then
+		echo "";
+		echo "Installing packages...";
+		echo "";
+
+		sudo apt-get update;
+		sudo apt-get install -y git man net-tools tmux vim;
+
+		echo "";
+		echo "Package installation complete!";
+		echo "";
+	else
+		echo "";
+		echo "NOTE: Skipped package installation as package manager is not supported.";
+		echo "";
+	fi;
+fi;
+
+# Set up dotfiles
+echo "";
+echo "Setting up dotfiles...";
+echo "";
+
+file_list=$(ls -A ${dotfiles_repo_path});
+
+for file_name in ${file_list}; do
+	if [[ ("${file_name:0:1}" != ".") || ("${file_name}" == ".git") || ("${file_name}" == *".swp") ]]; then
+		continue;
+	fi;
+
+	if [[ ${is_force_setup} == ${TRUE} ]]; then
+		rm $HOME/${file_name};
+	fi;
+
+	if [[ ! -f "$HOME/${file_name}" ]]; then
+		ln --symbolic ${dotfiles_repo_path}/${file_name} $HOME/${file_name};
+		echo "Symlinked ${file_name}!";
+	else
+		echo "NOTE: Skipped symlinking ${file_name} as it already exists in $HOME.";
+	fi;
+done;
+
+echo "";
+echo "Done!";
+echo "";
+

@@ -17,7 +17,7 @@ if [[ "$(pwd)" != "${dotfiles_repo_path}" ]]; then
 fi;
 
 # Handle command-line arguments
-if [[ "$#" > 0 ]]; then
+if [[ "$#" -gt 0 ]]; then
 	while [[ "$#" -gt 0 ]]; do
 		case "$1" in
 			"--force-setup")
@@ -63,19 +63,19 @@ echo "";
 echo "Setting up dotfiles...";
 echo "";
 
-file_list=$(ls -A ${dotfiles_repo_path});
+file_list=$(ls -A "${dotfiles_repo_path}");
 
 for file_name in ${file_list}; do
 	if [[ ("${file_name:0:1}" != ".") || ("${file_name}" == ".git") || ("${file_name}" == *".swp") ]]; then
 		continue;
 	fi;
 
-	if [[ ${is_force_setup} == ${TRUE} ]]; then
-		rm $HOME/${file_name};
+	if [[ "${is_force_setup}" == "${TRUE}" ]]; then
+		rm "$HOME"/"${file_name}";
 	fi;
 
 	if [[ ! -f "$HOME/${file_name}" ]]; then
-		ln --symbolic ${dotfiles_repo_path}/${file_name} $HOME/${file_name};
+		ln --symbolic "${dotfiles_repo_path}"/"${file_name}" "$HOME"/"${file_name}";
 		echo "Symlinked ${file_name}!";
 	else
 		echo "NOTE: Skipped symlinking ${file_name} as it already exists in $HOME.";

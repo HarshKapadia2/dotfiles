@@ -70,7 +70,7 @@ for file_name in ${file_list}; do
 		continue;
 	fi;
 
-	if [[ "${is_force_setup}" == "${TRUE}" ]]; then
+	if [[ ("${is_force_setup}" == "${TRUE}") && (-f "$HOME/${file_name}") ]]; then
 		rm "$HOME/${file_name}";
 	fi;
 

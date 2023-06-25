@@ -71,11 +71,11 @@ for file_name in ${file_list}; do
 	fi;
 
 	if [[ "${is_force_setup}" == "${TRUE}" ]]; then
-		rm "$HOME"/"${file_name}";
+		rm "$HOME/${file_name}";
 	fi;
 
 	if [[ ! -f "$HOME/${file_name}" ]]; then
-		ln --symbolic "${dotfiles_repo_path}"/"${file_name}" "$HOME"/"${file_name}";
+		ln --symbolic "${dotfiles_repo_path}/${file_name}" "$HOME/${file_name}";
 		echo "Symlinked ${file_name}!";
 	else
 		echo "NOTE: Skipped symlinking ${file_name} as it already exists in $HOME.";

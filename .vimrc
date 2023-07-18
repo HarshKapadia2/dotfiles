@@ -1,4 +1,7 @@
-" This base template has been modified and taken from 'The Missing Semester of Your CS Education' that can be found at https://missing.csail.mit.edu/2020/editors/#:~:text=Download%20our%20config%20here%20and%20save%20it%20to%20~/.vimrc.
+" This base template has been modified and taken from 'The Missing Semester of
+" Your CS Education' that can be found at
+" https://missing.csail.mit.edu/2020/editors/#:~:text=Download%20our%20config%20here%20and%20save%20it%20to%20~/.vimrc.
+" Modifications to the base template have been made.
 
 " Comments in Vimscript start with a `"`.
 
@@ -83,3 +86,28 @@ inoremap <Left>  <ESC>:echoe "Use h"<CR>
 inoremap <Right> <ESC>:echoe "Use l"<CR>
 inoremap <Up>    <ESC>:echoe "Use k"<CR>
 inoremap <Down>  <ESC>:echoe "Use j"<CR>
+
+" ------------------------- Plugins -------------------------------
+" Install 'vim-plug' plugin manager (if it isn't already installed)
+" https://github.com/junegunn/vim-plug
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent execute '!curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" Install plugins using 'vim-plug'
+call plug#begin('~/.vim/plugged')
+
+" EditorConfig: https://github.com/editorconfig/editorconfig-vim
+Plug 'editorconfig/editorconfig-vim'
+" Shell formatting: https://github.com/z0mbix/vim-shfmt
+Plug 'z0mbix/vim-shfmt'
+
+call plug#end()
+
+" 'shfmt' plugin options
+" https://github.com/z0mbix/vim-shfmt
+" Args: https://github.com/mvdan/sh/blob/master/cmd/shfmt/shfmt.1.scd
+let g:shfmt_extra_args = '-bn -ci -sr -kp'
+let g:shfmt_fmt_on_save = 1
+

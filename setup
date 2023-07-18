@@ -1,88 +1,144 @@
 #! /bin/bash
 
-set -o pipefail -E -e -u;
+set -o pipefail -E -e -u
 
-FALSE=0;
-TRUE=1;
+FALSE=0
+TRUE=1
 
-dotfiles_repo_path="$HOME/dotfiles";
+dotfiles_repo_path="$HOME/dotfiles"
 
-is_force_setup=${FALSE};
-is_install_pkg=${FALSE};
+is_force_setup=${FALSE}
+is_install_pkg=${FALSE}
+
+# Usage instructions
+print_usage() {
+	echo "
+NAME
+	setup - Setup Dotfiles for the current user and optionally install packages.
+
+SYNOPSIS
+	./setup [--force-setup] [--install-pkg]
+
+DESCRIPTION
+	Symlink Dotfiles to current user's home directory and optionally install
+	packages.
+
+	Dotfiles supported: .clang-format, .editorconfig, .gitconfig, .prettierrc,
+	.tmux.conf,	.vimrc
+
+	The Dotfile repository is expected to be located in the current user's home
+	directory. More details can be found at
+	https://github.com/HarshKapadia2/dotfiles.
+
+OPTIONS
+	--force-setup
+		For every Dotfile in the repository, delete the corresponding
+		Dotfile/Symlink in the current user's home directory (if it exists) and
+		then Symlink the Dotfile.
+		Requirement: Optional
+
+	--install-pkg
+		Install packages on supported OSs. Symlinking will be done after package
+		installation.
+		Requirement: Optional
+		Installed packages: git, man, net-tools, shfmt, tmux, vim
+		Supported OSs: Debian-based distros that support APT, like Ubuntu.
+
+	--help
+		Print this command usage instruction.
+		Requirement: Optional
+
+AUTHOR
+	Written by Harsh Kapadia.
+
+REPORTING BUGS
+	Report bugs and improvements at
+	https://github.com/HarshKapadia2/dotfiles/issues.
+"
+}
 
 # Check script execution directory
 if [[ "$(pwd)" != "${dotfiles_repo_path}" ]]; then
-	echo "Error: The script should be executed from ${dotfiles_repo_path} but was executed from $(pwd).";
-	exit 1;
-fi;
+	echo "Error: The script should be executed from ${dotfiles_repo_path} but
+was executed from $(pwd)."
+	print_usage
+	exit 1
+fi
 
 # Handle command-line arguments
 if [[ "$#" -gt 0 ]]; then
 	while [[ "$#" -gt 0 ]]; do
 		case "$1" in
 			"--force-setup")
-				is_force_setup=${TRUE};
-				shift;
+				is_force_setup=${TRUE}
+				shift
 				;;
 			"--install-pkg")
-				is_install_pkg=${TRUE};
-				shift;
+				is_install_pkg=${TRUE}
+				shift
+				;;
+			"--help")
+				print_usage
+				exit 0
 				;;
 			*)
-				echo "";
-				echo "NOTE: Ignoring invalid argument $1.";
-				echo "";
-				shift;
+				echo ""
+				echo "NOTE: Ignoring invalid argument $1."
+				echo ""
+				shift
 				;;
-		esac;
-	done;
-fi;
+		esac
+	done
+fi
 
 # Install packages
 if [[ "${is_install_pkg}" == "${TRUE}" ]]; then
 	if command -v "apt-get"; then
-		echo "";
-		echo "Installing packages...";
-		echo "";
+		echo ""
+		echo "Installing packages..."
+		echo ""
 
-		sudo apt-get update;
-		sudo apt-get install -y git man net-tools tmux vim;
+		sudo apt-get update
+		sudo apt-get install -y git man net-tools shfmt tmux vim
 
-		echo "";
-		echo "Package installation complete!";
-		echo "";
+		echo ""
+		echo "Package installation complete!"
+		echo ""
 	else
-		echo "";
-		echo "NOTE: Skipped package installation as package manager is not supported.";
-		echo "";
-	fi;
-fi;
+		echo ""
+		echo "NOTE: Skipped package installation as package manager is not
+supported."
+		echo ""
+	fi
+fi
 
 # Set up dotfiles
-echo "";
-echo "Setting up dotfiles...";
-echo "";
+echo ""
+echo "Setting up dotfiles..."
+echo ""
 
-file_list=$(ls -A "${dotfiles_repo_path}");
+file_list=$(ls -A "${dotfiles_repo_path}")
 
 for file_name in ${file_list}; do
-	if [[ ("${file_name:0:1}" != ".") || ("${file_name}" == ".git") || ("${file_name}" == *".swp") ]]; then
-		continue;
-	fi;
+	if [[ ("${file_name:0:1}" != ".") ||
+		("${file_name}" == ".git") ||
+		("${file_name}" == *".swp") ]]; then
+		continue
+	fi
 
 	if [[ ("${is_force_setup}" == "${TRUE}") && (-f "$HOME/${file_name}") ]]; then
-		rm "$HOME/${file_name}";
-	fi;
+		rm "$HOME/${file_name}"
+	fi
 
 	if [[ ! -f "$HOME/${file_name}" ]]; then
-		ln --symbolic "${dotfiles_repo_path}/${file_name}" "$HOME/${file_name}";
-		echo "Symlinked ${file_name}!";
+		ln --symbolic "${dotfiles_repo_path}/${file_name}" "$HOME/${file_name}"
+		echo "Symlinked ${file_name}!"
 	else
-		echo "NOTE: Skipped symlinking ${file_name} as it already exists in $HOME.";
-	fi;
-done;
+		printf "\nNOTE: Skipped Symlinking ${file_name} as it already exists in"
+		printf " $HOME. Use the '--force-setup' option to force Symlinking.\n"
+	fi
+done
 
-echo "";
-echo "Done!";
-echo "";
-
+echo ""
+echo "Done!"
+echo ""

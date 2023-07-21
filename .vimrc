@@ -102,6 +102,8 @@ call plug#begin('~/.vim/plugged')
 Plug 'editorconfig/editorconfig-vim'
 " Shell formatting: https://github.com/z0mbix/vim-shfmt
 Plug 'z0mbix/vim-shfmt'
+" ShellCheck: https://github.com/itspriddle/vim-shellcheck
+Plug 'itspriddle/vim-shellcheck'
 
 call plug#end()
 

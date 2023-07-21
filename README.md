@@ -31,6 +31,7 @@ Packages installed
 -   `git`
 -   `man`
 -   `net-tools` (For `ifconfig`)
+-	`shellcheck`
 -	`shfmt` (For formatting Shell/Bash scripts)
 -   `tmux`
 -   `vim`

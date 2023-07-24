@@ -2,6 +2,15 @@
 
 [Harsh Kapadia](https://harshkapadia.me)'s dotfiles.
 
+## Dotfiles Present
+
+-   [clang-format](https://clang.llvm.org/docs/ClangFormat.html): [`.clang-format`](.clang-format)
+-   [EditorConfig](https://editorconfig.org): [`.editorconfig`](.editorconfig)
+-   [Git](https://git-scm.com): [`.gitconfig`](.gitconfig)
+-   [Prettier](https://prettier.io): [`.prettierrc`](.prettierrc)
+-   [tmux](https://tmux.github.io): [`.tmux.conf`](.tmux.conf)
+-   [Vim](https://www.vim.org): [`.vimrc`](.vimrc)
+
 ## Setup
 
 The [`setup` script](setup) will symlink dotfiles to the current user's home
@@ -10,37 +19,47 @@ arguments with which the script is invoked.
 
 ### Arguments
 
+```bash
+./setup [--force-setup] [--install-pkg]
+```
+
 #### No arguments
 
-Symlink all dotfiles to the current user's home directory. Dotfiles that already
-exist in the current user's home directory will be skipped. No packages will be
-installed.
+-   Symlink all dotfiles to the current user's home directory.
+    -   Dotfiles that already exist in the current user's home directory will be
+        skipped.
+-   No packages will be installed.
 
 #### `--force-setup`
 
-For every dotfile in the repository, delete the corresponding dotfile/symlink
-in the current user's home directory and then symlink the dotfile.
+-   For every Dotfile in the repository, delete the corresponding
+    Dotfile/Symlink in the current user's home directory (if it exists) and then
+    Symlink the Dotfile.
+-   Requirement: Optional
 
 #### `--install-pkg`
 
-Install packages on supported OSs. Symlinking will be done after package
-installation.
+-   Install packages on supported OSs. Symlinking (setup) will be done after
+    package installation.
+-   Requirement: Optional, but note that some Vim plugins depend on packages to
+    be installed to work.
+-   Packages installed
+    -   `git`
+    -   `man`
+    -   `net-tools` (For `ifconfig`)
+    -   `nodejs` (For `prettier`)
+    -   `npm` (For `prettier`)
+    -   `shellcheck`
+    -   `shfmt` (For formatting Shell/Bash scripts)
+    -   `tmux`
+    -   `vim`
+-   OSs supported
+    -   Debian-based distros that support APT, like Ubuntu.
 
-Packages installed
+#### `--help`
 
--   `git`
--   `man`
--   `net-tools` (For `ifconfig`)
--   `nodejs` (For `prettier`)
--   `npm` (For `prettier`)
--   `shellcheck`
--   `shfmt` (For formatting Shell/Bash scripts)
--   `tmux`
--   `vim`
-
-OSs supported
-
--   Debian-based distros that support APT, like Ubuntu.
+-   Print this command usage instruction.
+-   Requirement: Optional
 
 ### Execution Instructions
 
@@ -65,17 +84,8 @@ $ bash setup
 $ ./setup --force-setup --install-pkg
 
 # Check changes
-$ ls -al ~
+$ ls -al ~ # Symlinked dotfiles should be present
 ```
-
-## Dotfiles Present
-
--   [clang-format](https://clang.llvm.org/docs/ClangFormat.html): [`.clang-format`](.clang-format)
--   [EditorConfig](https://editorconfig.org): [`.editorconfig`](.editorconfig)
--   [Git](https://git-scm.com): [`.gitconfig`](.gitconfig)
--   [Prettier](https://prettier.io): [`.prettierrc`](.prettierrc)
--   [tmux](https://tmux.github.io): [`.tmux.conf`](.tmux.conf)
--   [Vim](https://www.vim.org): [`.vimrc`](.vimrc)
 
 ## Resources
 

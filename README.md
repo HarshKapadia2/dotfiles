@@ -31,8 +31,10 @@ Packages installed
 -   `git`
 -   `man`
 -   `net-tools` (For `ifconfig`)
--	`shellcheck`
--	`shfmt` (For formatting Shell/Bash scripts)
+-   `nodejs` (For `prettier`)
+-   `npm` (For `prettier`)
+-   `shellcheck`
+-   `shfmt` (For formatting Shell/Bash scripts)
 -   `tmux`
 -   `vim`
 
@@ -43,7 +45,7 @@ OSs supported
 ### Execution Instructions
 
 > NOTE: It is expected that the dotfiles repository is placed in the current
-user's home directory.
+> user's home directory.
 
 ```bash
 # Navigate to the current user's home directory
@@ -69,7 +71,7 @@ $ ls -al ~
 ## Dotfiles Present
 
 -   [clang-format](https://clang.llvm.org/docs/ClangFormat.html): [`.clang-format`](.clang-format)
--	[EditorConfig](https://editorconfig.org): [`.editorconfig`](.editorconfig)
+-   [EditorConfig](https://editorconfig.org): [`.editorconfig`](.editorconfig)
 -   [Git](https://git-scm.com): [`.gitconfig`](.gitconfig)
 -   [Prettier](https://prettier.io): [`.prettierrc`](.prettierrc)
 -   [tmux](https://tmux.github.io): [`.tmux.conf`](.tmux.conf)
@@ -80,4 +82,3 @@ $ ls -al ~
 -   [The Missing Semester of Your CS Education: Dotfiles](https://missing.csail.mit.edu/2020/command-line/#dotfiles)
 -   [What Is "rc" and What Are "rc" Files?](https://www.baeldung.com/linux/rc-files)
 -   [Things to keep in mind about Symbolic Links](https://linuxhandbook.com/symbolic-link-linux/#things-to-keep-in-mind-about-symbolic-links)
-

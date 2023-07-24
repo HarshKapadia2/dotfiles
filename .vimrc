@@ -101,9 +101,18 @@ call plug#begin('~/.vim/plugged')
 " EditorConfig: https://github.com/editorconfig/editorconfig-vim
 Plug 'editorconfig/editorconfig-vim'
 " Shell formatting: https://github.com/z0mbix/vim-shfmt
+" Needs `shfmt` package
 Plug 'z0mbix/vim-shfmt'
 " ShellCheck: https://github.com/itspriddle/vim-shellcheck
+" Needs `shellcheck` package
 Plug 'itspriddle/vim-shellcheck'
+" Prettier: https://github.com/prettier/vim-prettier
+" Needs `prettier` installed globally (which needs `nodejs` installed)
+Plug 'prettier/vim-prettier', {
+	\ 'do': 'npm i --omit=dev && npm ci --omit=dev',
+	\ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json',
+	\ 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html']
+	\ }
 
 call plug#end()
 
@@ -112,4 +121,9 @@ call plug#end()
 " Args: https://github.com/mvdan/sh/blob/master/cmd/shfmt/shfmt.1.scd
 let g:shfmt_extra_args = '-bn -ci -sr -kp'
 let g:shfmt_fmt_on_save = 1
+
+" 'vim-prettier' plugin options
+" https://github.com/prettier/vim-prettier
+let g:prettier#autoformat = 1
+let g:prettier#autoformat_require_pragma = 0
 

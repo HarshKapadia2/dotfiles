@@ -42,7 +42,8 @@ OPTIONS
 		after package installation.
 		Requirement: Optional, but note that some Vim plugins depend on packages
 		to be installed to work.
-		Installed packages: git, man, net-tools, shellcheck, shfmt, tmux, vim
+		Installed packages: git, man, net-tools, nodejs, npm, shellcheck, shfmt,
+		tmux, vim
 		Supported OSs: Debian-based distros that support APT, like Ubuntu.
 
 	--help
@@ -100,7 +101,8 @@ if [[ "${is_install_pkg}" == "${TRUE}" ]]; then
 		echo ""
 
 		sudo apt-get update
-		sudo apt-get install -y git man net-tools shellcheck shfmt tmux vim
+		sudo apt-get install -y git man net-tools nodejs npm shellcheck shfmt \
+			tmux vim
 
 		echo ""
 		echo "Package installation complete!"

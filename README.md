@@ -67,7 +67,7 @@ arguments with which the script is invoked.
 
 ```bash
 # Navigate to the current user's home directory
-cd ~
+$ cd ~
 
 # Clone the repository
 $ git clone https://github.com/HarshKapadia2/dotfiles.git

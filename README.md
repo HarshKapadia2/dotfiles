@@ -55,6 +55,8 @@ arguments with which the script is invoked.
     -   `vim`
 -   OSs supported
     -   Debian-based distros that support APT, like Ubuntu.
+-   NOTE: `shfmt` is available only on Ubuntu >= v22 and so the script will fail
+    on Ubuntu OSs less than that version.
 
 #### `--help`
 

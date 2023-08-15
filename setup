@@ -45,6 +45,8 @@ OPTIONS
 		Installed packages: git, man, net-tools, nodejs, npm, shellcheck, shfmt,
 		tmux, vim
 		Supported OSs: Debian-based distros that support APT, like Ubuntu.
+		NOTE: shfmt is available only on Ubuntu >= v22 and so the script will
+		fail on Ubuntu OSs less than that version.
 
 	--help
 		Print this command usage instruction.

@@ -17,7 +17,7 @@ NAME
 	setup - Setup Dotfiles for the current user and optionally install packages.
 
 SYNOPSIS
-	./setup [--force-setup] [--install-pkg]
+	./setup [--force-setup] [--install-pkg] [--help]
 
 DESCRIPTION
 	Symlink Dotfiles to current user's home directory and optionally install

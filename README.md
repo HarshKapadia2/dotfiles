@@ -20,7 +20,7 @@ arguments with which the script is invoked.
 ### Arguments
 
 ```bash
-./setup [--force-setup] [--install-pkg]
+./setup [--force-setup] [--install-pkg] [--help]
 ```
 
 #### No arguments

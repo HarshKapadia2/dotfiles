@@ -137,8 +137,10 @@ for file_name in ${file_list}; do
 		ln --symbolic "${dotfiles_repo_path}/${file_name}" "$HOME/${file_name}"
 		echo "Symlinked ${file_name}!"
 	else
-		printf "\nNOTE: Skipped Symlinking ${file_name} as it already exists in"
-		printf " $HOME. Use the '--force-setup' option to force Symlinking.\n"
+		printf "\nNOTE: Skipped Symlinking %s as it already exists in" \
+			"${file_name}"
+		printf " %s. Use the '--force-setup' option to force Symlinking.\n" \
+			"$HOME"
 	fi
 done
 

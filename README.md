@@ -65,12 +65,9 @@ arguments with which the script is invoked.
 
 ### Execution Instructions
 
-> NOTE: It is expected that the dotfiles repository is placed in the current
-> user's home directory.
-
 ```bash
 # Navigate to the current user's home directory
-$ cd ~
+cd ~
 
 # Clone the repository
 $ git clone https://github.com/HarshKapadia2/dotfiles.git
@@ -78,7 +75,7 @@ $ git clone https://github.com/HarshKapadia2/dotfiles.git
 # Navigate to the dotfiles repository
 $ cd ~/dotfiles
 
-# Run the set up script from the repository directory
+# Run the setup script
 $ ./setup
 # Or
 $ bash setup

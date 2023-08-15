@@ -5,7 +5,7 @@ set -o pipefail -E -e -u
 FALSE=0
 TRUE=1
 
-dotfiles_repo_path="$HOME/dotfiles"
+dotfiles_repo_path="$(dirname "$0")"
 
 is_force_setup=${FALSE}
 is_install_pkg=${FALSE}
@@ -25,10 +25,6 @@ DESCRIPTION
 
 	Dotfiles supported: .clang-format, .editorconfig, .gitconfig, .prettierrc,
 	.tmux.conf,	.vimrc
-
-	The Dotfile repository is expected to be located in the current user's home
-	directory. More details can be found at
-	https://github.com/HarshKapadia2/dotfiles.
 
 OPTIONS
 	--force-setup
@@ -60,14 +56,6 @@ REPORTING BUGS
 	https://github.com/HarshKapadia2/dotfiles/issues.
 "
 }
-
-# Check script execution directory
-if [[ "$(pwd)" != "${dotfiles_repo_path}" ]]; then
-	echo "Error: The script should be executed from ${dotfiles_repo_path} but
-was executed from $(pwd)."
-	print_usage
-	exit 1
-fi
 
 # Handle command-line arguments
 if [[ "$#" -gt 0 ]]; then

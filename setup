@@ -2,8 +2,8 @@
 
 set -o pipefail -E -e -u
 
-FALSE=0
-TRUE=1
+readonly FALSE=0
+readonly TRUE=1
 
 is_force_setup=${FALSE}
 is_install_pkg=${FALSE}

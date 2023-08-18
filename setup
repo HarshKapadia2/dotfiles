@@ -5,8 +5,6 @@ set -o pipefail -E -e -u
 FALSE=0
 TRUE=1
 
-dotfiles_repo_path="$(dirname "$0")"
-
 is_force_setup=${FALSE}
 is_install_pkg=${FALSE}
 
@@ -81,6 +79,13 @@ if [[ "$#" -gt 0 ]]; then
 				;;
 		esac
 	done
+fi
+
+# Set dotfiles repository directory path
+dotfiles_repo_path="$(dirname "$0")"
+
+if [[ "${dotfiles_repo_path}" == "." ]]; then
+	dotfiles_repo_path="$(pwd)"
 fi
 
 # Install packages

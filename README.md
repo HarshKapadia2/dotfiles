@@ -44,6 +44,7 @@ arguments with which the script is invoked.
 -   Requirement: Optional, but note that some Vim plugins depend on packages to
     be installed to work.
 -   Packages installed
+    -   `curl`
     -   `git`
     -   `man`
     -   `net-tools` (For `ifconfig`)

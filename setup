@@ -22,7 +22,7 @@ DESCRIPTION
 	packages.
 
 	Dotfiles supported: .clang-format, .editorconfig, .gitconfig, .prettierrc,
-	.tmux.conf,	.vimrc
+	.tmux.conf, .vimrc
 
 OPTIONS
 	--force-setup
@@ -36,8 +36,8 @@ OPTIONS
 		after package installation.
 		Requirement: Optional, but note that some Vim plugins depend on packages
 		to be installed to work.
-		Installed packages: git, man, net-tools, nodejs, npm, shellcheck, shfmt,
-		tmux, vim
+		Installed packages: curl, git, man, net-tools, nodejs, npm, shellcheck,
+		shfmt, tmux, vim
 		Supported OSs: Debian-based distros that support APT, like Ubuntu.
 		NOTE: shfmt is available only on Ubuntu >= v22 and so the script will
 		fail on Ubuntu OSs less than that version.
@@ -96,8 +96,8 @@ if [[ "${is_install_pkg}" == "${TRUE}" ]]; then
 		echo ""
 
 		sudo apt-get update
-		sudo apt-get install -y git man net-tools nodejs npm shellcheck shfmt \
-			tmux vim
+		sudo apt-get install -y curl git man net-tools nodejs npm shellcheck \
+			shfmt tmux vim
 
 		echo ""
 		echo "Package installation complete!"

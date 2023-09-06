@@ -82,11 +82,7 @@ if [[ "$#" -gt 0 ]]; then
 fi
 
 # Set dotfiles repository directory path
-dotfiles_repo_path="$(dirname "$0")"
-
-if [[ "${dotfiles_repo_path}" == "." ]]; then
-	dotfiles_repo_path="$(pwd)"
-fi
+dotfiles_repo_path="$(dirname "$(realpath "$0")")"
 
 # Install packages
 if [[ "${is_install_pkg}" == "${TRUE}" ]]; then

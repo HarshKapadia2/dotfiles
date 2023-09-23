@@ -113,6 +113,9 @@ Plug 'prettier/vim-prettier', {
 	\ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json',
 	\ 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html']
 	\ }
+" Clang Format: https://github.com/rhysd/vim-clang-format
+" Needs `clang-format` package
+Plug 'rhysd/vim-clang-format'
 
 call plug#end()
 
@@ -126,4 +129,10 @@ let g:shfmt_fmt_on_save = 1
 " https://github.com/prettier/vim-prettier
 let g:prettier#autoformat = 1
 let g:prettier#autoformat_require_pragma = 0
+
+" 'vim-clang-format' plugin options
+" https://github.com/rhysd/vim-clang-format
+let g:clang_format#detect_style_file = 1
+let g:clang_format#auto_filetypes = ["c", "cpp"]
+let g:clang_format#auto_format = 1
 

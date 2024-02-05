@@ -93,3 +93,4 @@ $ ls -al ~ # Symlinked dotfiles should be present
 -   [The Missing Semester of Your CS Education: Dotfiles](https://missing.csail.mit.edu/2020/command-line/#dotfiles)
 -   [What Is "rc" and What Are "rc" Files?](https://www.baeldung.com/linux/rc-files)
 -   [Things to keep in mind about Symbolic Links](https://linuxhandbook.com/symbolic-link-linux/#things-to-keep-in-mind-about-symbolic-links)
+-   [Solving the Dotfiles Problem (And Learning Bash)](https://www.youtube.com/watch?v=mSXOYhfDFYo)

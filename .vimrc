@@ -60,6 +60,9 @@ set noerrorbells visualbell t_vb=
 " sometimes be convenient.
 set mouse+=a
 
+" Add an additional way to escape (<ESC>) from insert mode and other modes
+inoremap jj <ESC>
+
 " ------------------------- Plugins -------------------------------
 " Install 'vim-plug' plugin manager (if it isn't already installed)
 " https://github.com/junegunn/vim-plug

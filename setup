@@ -120,13 +120,15 @@ for file_name in ${file_list}; do
 		continue
 	fi
 
-	if [[ ("${is_force_setup}" == "${TRUE}") && (-f "$HOME/${file_name}") ]]; then
+	if [[ ("${is_force_setup}" == "${TRUE}") && (-L "$HOME/${file_name}") ]]; then
+		echo "Deleting ${file_name} symlink."
 		rm "$HOME/${file_name}"
 	fi
 
 	if [[ ! -f "$HOME/${file_name}" ]]; then
 		ln --symbolic "${dotfiles_repo_path}/${file_name}" "$HOME/${file_name}"
 		echo "Symlinked ${file_name}!"
+		echo ""
 	else
 		printf "\nNOTE: Skipped Symlinking %s as it already exists in" \
 			"${file_name}"

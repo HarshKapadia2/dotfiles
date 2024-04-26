@@ -60,7 +60,7 @@ set noerrorbells visualbell t_vb=
 " sometimes be convenient.
 set mouse+=a
 
-" Add an additional way to escape (<ESC>) from insert mode and other modes
+" Add an additional keybinding to escape (<ESC>) from insert mode
 inoremap jj <ESC>
 
 " ------------------------- Plugins -------------------------------

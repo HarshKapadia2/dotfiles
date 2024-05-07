@@ -92,6 +92,11 @@ Plug 'prettier/vim-prettier', {
 " Clang Format: https://github.com/rhysd/vim-clang-format
 " Needs `clang-format` package
 Plug 'rhysd/vim-clang-format'
+" YouCompleteMe: https://github.com/ycm-core/YouCompleteMe
+" Needs `build-essential`, `cmake` and `python3-dev` packages
+" Needs `bear` package to generate compilation DB for C family languages
+" User needs to be use `bear` manually to generate `compile_commmands.json`
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clangd-completer' }
 
 call plug#end()
 

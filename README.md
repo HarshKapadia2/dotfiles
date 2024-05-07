@@ -44,13 +44,18 @@ arguments with which the script is invoked.
 -   Requirement: Optional, but note that some Vim plugins depend on packages to
     be installed to work.
 -   Packages installed
-    -   `clang-format`
+	-	`bear` (For `YouCompleteMe` Vim plugin)
+	-	`build-essential` (For `YouCompleteMe` Vim plugin)
+    -   `clang-format` (For formatting C files)
+	-	`cmake` (For `YouCompleteMe` Vim plugin)
     -   `curl`
     -   `git`
     -   `man`
     -   `net-tools` (For `ifconfig`)
     -   `nodejs` (For `prettier`)
     -   `npm` (For `prettier`)
+	-	`python3`
+	-	`python3-dev` (For `YouCompleteMe` Vim plugin)
     -   `shellcheck`
     -   `shfmt` (For formatting Shell/Bash scripts)
     -   `tmux`

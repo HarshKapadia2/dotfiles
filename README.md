@@ -39,8 +39,8 @@ arguments with which the script is invoked.
 
 #### `--install-pkg`
 
--   Install packages on supported OSs. Symlinking (setup) will be done after
-    package installation.
+-   Install packages and plugin-extras on supported OSs. Symlinking (setup) will
+	be done after package installation.
 -   Requirement: Optional, but note that some Vim plugins depend on packages to
     be installed to work.
 -   Packages installed

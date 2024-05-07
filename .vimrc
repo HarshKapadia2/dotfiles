@@ -121,3 +121,8 @@ let g:clang_format#detect_style_file = 1
 let g:clang_format#auto_filetypes = ["c", "cpp"]
 let g:clang_format#auto_format = 1
 
+" 'YouCompleteMe' plugin options
+" https://github.com/ycm-core/YouCompleteMe
+let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_autoclose_preview_window_after_completion = 1
+

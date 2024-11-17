@@ -33,7 +33,7 @@ arguments with which the script is invoked.
 #### `--force-setup`
 
 -   For every Dotfile in the repository, delete the corresponding
-    Dotfile/Symlink in the current user's home directory (if it exists) and then
+    dotfile/symlink in the current user's home directory (if it exists) and then
     Symlink the Dotfile.
 -   Requirement: Optional
 
@@ -62,8 +62,16 @@ arguments with which the script is invoked.
     -   `vim`
 -   OSs supported
     -   Debian-based distros that support APT, like Ubuntu.
--   NOTE: `shfmt` is available only on Ubuntu >= v22 and so the script will fail
-    on Ubuntu OSs less than that version.
+-   NOTE: `shfmt` is available only on Ubuntu >= v22 and so **the script will
+	fail on Ubuntu OSs < v22**.
+
+#### `--delete`
+
+-	Remove all dotfile symlinks and delete any related files, like all Vim
+	plugins mentioned in the .vimrc file.
+-	Packages are not uninstalled.
+-	No other flag will be executed if this flag is mentioned.
+-	Requirement: Optional
 
 #### `--help`
 

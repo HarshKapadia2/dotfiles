@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -o pipefail -E -e -u
+set -Eeuo pipefail
 
 readonly FALSE=0
 readonly TRUE=1
@@ -8,6 +8,8 @@ readonly TRUE=1
 dotfiles_repo_path="$(dirname "$(realpath "$0")")"
 is_force_setup=${FALSE}
 is_install_pkg=${FALSE}
+is_dotfiles_to_install=${TRUE}
+is_delete_dotfiles_setup=${FALSE}
 
 # Usage instructions
 print_usage() {
@@ -44,12 +46,17 @@ OPTIONS
 		NOTE: shfmt is available only on Ubuntu >= v22 and so the script will
 		fail on Ubuntu OSs less than that version.
 
+	--delete
+		Remove all dotfile symlinks and delete any related files, like all Vim
+		plugins mentioned in the .vimrc file. Packages are not uninstalled. No
+		other flag will be executed if this flag is mentioned.
+
 	--help
 		Print this command usage instruction.
 		Requirement: Optional
 
 AUTHOR
-	Written by Harsh Kapadia (https://harshkapadia.me).
+	Harsh Kapadia (https://harshkapadia.me)
 
 REPORTING BUGS
 	Report bugs and improvements at
@@ -65,7 +72,7 @@ add_youcompleteme_extra_support() {
 	vimrc_line_to_add="source ${lsp_dir}/vimrc.generated"
 
 	if [[ -d "${lsp_dir}" ]]; then
-		rm -rf "${lsp_dir}"
+		sudo rm -rf "${lsp_dir}"
 	fi
 
 	if [[ "${curr_vimrc_last_line}" == "${vimrc_line_to_add}" ]]; then
@@ -97,6 +104,11 @@ if [[ "$#" -gt 0 ]]; then
 				is_install_pkg=${TRUE}
 				shift
 				;;
+			"--delete")
+				is_delete_dotfiles_setup=${TRUE}
+				is_dotfiles_to_install=${FALSE}
+				shift
+				;;
 			"--help")
 				print_usage
 				exit 0
@@ -109,6 +121,73 @@ if [[ "$#" -gt 0 ]]; then
 				;;
 		esac
 	done
+fi
+
+# Remove all dotfile symlinks and delete other related files
+# Eg of related files: Vim's installed plugins
+# NOTE: Keep deletion as the first snippet, so that other flags (if entered
+# alongside `--delete`) are not executed
+if [[ "${is_delete_dotfiles_setup}" == "${TRUE}" ]]; then
+	echo ""
+	echo "Removing dotfile symlinks..."
+	echo ""
+
+	file_list=$(ls -A "${dotfiles_repo_path}")
+
+	for file_name in ${file_list}; do
+		if [[ ("${file_name:0:1}" != ".") ||
+			("${file_name}" == ".git") ||
+			("${file_name}" == ".gitignore") ||
+			("${file_name}" == *".swp") ]]; then
+			continue
+		fi
+
+		if [[ -L "$HOME/${file_name}" ]]; then
+			echo "Deleting ${file_name} symlink."
+			rm "$HOME/${file_name}"
+		fi
+	done
+
+	# Remove Vim plugins listed in .vimrc, if they exist
+	vim_plugin_list=$(grep "Plug '" "${dotfiles_repo_path}/.vimrc" | awk '{print $2}' | awk -F "/" '{print $2}' | awk -F "'" '{print $1}')
+
+	for plugin_name in ${vim_plugin_list}; do
+		plugin_dir="$HOME/.vim/plugged/${plugin_name}"
+
+		if [[ -d "${plugin_dir}" ]]; then
+			echo "Deleting plugin '${plugin_name}'."
+			rm -rf "${plugin_dir}"
+		else
+			echo "Plugin '${plugin_name}' not found. Skipping."
+		fi
+	done
+
+	if [[ -f "$HOME/.vim/autoload/plug.vim" ]]; then
+		echo "Deleting file 'plug.vim'."
+		rm "$HOME/.vim/autoload/plug.vim"
+	else
+		echo "File 'plug.vim' not found. Skipping."
+	fi
+
+	lsp_dir="${dotfiles_repo_path}/lsp-examples"
+	if [[ -d "${lsp_dir}" ]]; then
+		echo "Deleting 'lsp-examples' repo."
+		rm -rf "${lsp_dir}"
+	else
+		echo "'lsp-examples' repo not found. Skipping."
+	fi
+
+	# Hard reset the .vimrc file to remove the 'source' line added for the
+	# 'lsp-examples' repo.
+	cd "${dotfiles_repo_path}"
+	git checkout HEAD -- "${dotfiles_repo_path}/.vimrc"
+
+	echo ""
+	echo "Done!"
+	echo ""
+
+	# Exit here so that no other flags are executed
+	exit 0
 fi
 
 # Install packages and plugin-extras
@@ -137,37 +216,39 @@ supported."
 fi
 
 # Set up dotfiles
-echo ""
-echo "Setting up dotfiles..."
-echo ""
+if [[ "${is_dotfiles_to_install}" == "${TRUE}" ]]; then
+	echo ""
+	echo "Setting up dotfiles..."
+	echo ""
 
-file_list=$(ls -A "${dotfiles_repo_path}")
+	file_list=$(ls -A "${dotfiles_repo_path}")
 
-for file_name in ${file_list}; do
-	if [[ ("${file_name:0:1}" != ".") ||
-		("${file_name}" == ".git") ||
-		("${file_name}" == ".gitignore") ||
-		("${file_name}" == *".swp") ]]; then
-		continue
-	fi
+	for file_name in ${file_list}; do
+		if [[ ("${file_name:0:1}" != ".") ||
+			("${file_name}" == ".git") ||
+			("${file_name}" == ".gitignore") ||
+			("${file_name}" == *".swp") ]]; then
+			continue
+		fi
 
-	if [[ ("${is_force_setup}" == "${TRUE}") && (-L "$HOME/${file_name}") ]]; then
-		echo "Deleting ${file_name} symlink."
-		rm "$HOME/${file_name}"
-	fi
+		if [[ ("${is_force_setup}" == "${TRUE}") && (-L "$HOME/${file_name}") ]]; then
+			echo "Deleting ${file_name} symlink."
+			rm "$HOME/${file_name}"
+		fi
 
-	if [[ ! -f "$HOME/${file_name}" ]]; then
-		ln --symbolic "${dotfiles_repo_path}/${file_name}" "$HOME/${file_name}"
-		echo "Symlinked ${file_name}!"
-		echo ""
-	else
-		printf "\nNOTE: Skipped Symlinking %s as it already exists in" \
-			"${file_name}"
-		printf " %s. Use the '--force-setup' option to force Symlinking.\n" \
-			"$HOME"
-	fi
-done
+		if [[ ! -f "$HOME/${file_name}" ]]; then
+			ln --symbolic "${dotfiles_repo_path}/${file_name}" "$HOME/${file_name}"
+			echo "Symlinked ${file_name}!"
+			echo ""
+		else
+			printf "\nNOTE: Skipped Symlinking %s as it already exists in" \
+				"${file_name}"
+			printf " %s. Use the '--force-setup' option to force Symlinking.\n" \
+				"$HOME"
+		fi
+	done
 
-echo ""
-echo "Done!"
-echo ""
+	echo ""
+	echo "Done!"
+	echo ""
+fi

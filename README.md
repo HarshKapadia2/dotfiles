@@ -49,6 +49,7 @@ arguments with which the script is invoked.
     -   `clang-format` (For formatting C files)
 	-	`cmake` (For `YouCompleteMe` Vim plugin)
     -   `curl`
+	-	`gh` (For GitHub auth)
     -   `git`
     -   `man`
     -   `net-tools` (For `ifconfig`)
@@ -59,6 +60,7 @@ arguments with which the script is invoked.
     -   `shellcheck`
     -   `shfmt` (For formatting Shell/Bash scripts)
     -   `tmux`
+	-	`tree`
     -   `vim`
 -   OSs supported
     -   Debian-based distros that support APT, like Ubuntu.

@@ -1,0 +1,31 @@
+#! /bin/bash
+
+set -Eeuo pipefail
+
+htoprc_dir="$HOME/.config/htop"
+hhtop_dir=$(dirname "$(realpath "$0")")
+bashrc_path="$HOME/.bashrc"
+
+# Remove symlinks and if present, restore the original htoprc file
+if [[ -f "${htoprc_dir}/htoprc.orig.bkp" ]]; then
+	rm "${htoprc_dir}/htoprc"
+	mv "${htoprc_dir}/htoprc.orig.bkp" "${htoprc_dir}/htoprc"
+elif [[ -f "${htoprc_dir}/htoprc" ]]; then
+	rm "${htoprc_dir}/htoprc"
+fi
+
+# Unset the hhtop function in .bashrc
+if [[ "$(grep "hhtop() {" "${bashrc_path}")" != "" && "$(grep "unset hhtop" "${bashrc_path}")" == "" ]]; then
+	echo "
+unset hhtop
+" >> "${bashrc_path}"
+fi
+
+# IMPORTANT
+echo "
+NOTE: For hhtop uninstallation, please make sure to run the following command
+	after executing this script
+	-> source \"$HOME/.bashrc\"
+"
+
+sleep 1

@@ -10,6 +10,7 @@
 -   [Prettier](https://prettier.io): [`.prettierrc`](.prettierrc)
 -   [tmux](https://tmux.github.io): [`.tmux.conf`](.tmux.conf)
 -   [Vim](https://www.vim.org): [`.vimrc`](.vimrc)
+-	[htop](https://htop.dev): [hhtop](htop)
 
 ## Setup
 
@@ -62,6 +63,8 @@ arguments with which the script is invoked.
     -   `tmux`
 	-	`tree`
     -   `vim`
+	-	`tree`
+	-	`gh`
 -   OSs supported
     -   Debian-based distros that support APT, like Ubuntu.
 -   NOTE: `shfmt` is available only on Ubuntu >= v22 and so **the script will
@@ -109,3 +112,4 @@ $ ls -al ~ # Symlinked dotfiles should be present
 -   [What Is "rc" and What Are "rc" Files?](https://www.baeldung.com/linux/rc-files)
 -   [Things to keep in mind about Symbolic Links](https://linuxhandbook.com/symbolic-link-linux/#things-to-keep-in-mind-about-symbolic-links)
 -   [Solving the Dotfiles Problem (And Learning Bash)](https://www.youtube.com/watch?v=mSXOYhfDFYo)
+

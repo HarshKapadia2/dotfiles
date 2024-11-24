@@ -1,0 +1,51 @@
+#! /bin/bash
+
+set -Eeuo pipefail
+
+num_screen_col_cutoff=180
+num_cpu_cutoff_low=64
+num_cpu_cutoff_high=192
+htoprc_dir="$HOME/.config/htop"
+hhtop_dir=$(dirname "$(realpath "$0")")
+num_cpus=$(lscpu | grep -i "cpu(s):" | awk '{if(! /node/) print $2}')
+num_screen_cols=$(tput cols) # Not aware when this could not give a value for
+# error checking
+
+if [[ "${num_cpus}" == "" ]]; then
+	echo "ERROR: Incorrect CPU count of '${num_cpus}' found."
+	echo ""
+
+	exit 1
+fi
+
+if [[ ${num_cpus} -lt 0 ]]; then
+	echo "ERROR: Incorrect CPU count of '${num_cpus}' found."
+	echo ""
+
+	exit 1
+fi
+
+if [[ ${num_screen_cols} -le ${num_screen_col_cutoff} ]]; then
+	if [[ ${num_cpus} -le ${num_cpu_cutoff_low} ]]; then
+		rm "${htoprc_dir}/htoprc"
+		cp "${hhtop_dir}/htoprc.1.bkp" "${htoprc_dir}/htoprc"
+	else
+		rm "${htoprc_dir}/htoprc"
+		cp "${hhtop_dir}/htoprc.2.bkp" "${htoprc_dir}/htoprc"
+	fi
+else
+	if [[ ${num_cpus} -le ${num_cpu_cutoff_low} ]]; then
+		rm "${htoprc_dir}/htoprc"
+		cp "${hhtop_dir}/htoprc.1.bkp" "${htoprc_dir}/htoprc"
+	elif [[ ${num_cpus} -gt ${num_cpu_cutoff_high} ]]; then
+		rm "${htoprc_dir}/htoprc"
+		cp "${hhtop_dir}/htoprc.2.bkp" "${htoprc_dir}/htoprc"
+	else
+		rm "${htoprc_dir}/htoprc"
+		cp "${htoprc_dir}/htoprc.3.bkp" "${htoprc_dir}/htoprc"
+	fi
+fi
+
+sleep 0.5
+
+htop

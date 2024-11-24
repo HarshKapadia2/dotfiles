@@ -1,0 +1,39 @@
+#! /bin/bash
+
+set -Eeuo pipefail
+
+htoprc_dir="$HOME/.config/htop"
+hhtop_dir=$(dirname "$(realpath "$0")")
+bashrc_path="$HOME/.bashrc"
+
+# Create original htoprc file backup or just create dir for future htoprc
+if [[ -f "${htoprc_dir}/htoprc" ]]; then
+	cp "${htoprc_dir}/htoprc" "${htoprc_dir}/htoprc.orig.bkp"
+else
+	mkdir --parents "${htoprc_dir}"
+fi
+
+# Add hhtop function to .bashrc or remove the unset statement
+if [[ "$(grep "hhtop() {" "${bashrc_path}")" == "" ]]; then
+
+	echo "
+hhtop() {
+	${hhtop_dir}/hhtop \"\$@\"
+}
+
+export -f hhtop
+" >> "${bashrc_path}"
+
+elif [[ "$(grep "unset hhtop" "${bashrc_path}")" != "" ]]; then
+	grep -v "unset hhtop" "${bashrc_path}" > "$HOME/.bashrc_temp"
+	mv "$HOME/.bashrc_temp" "${bashrc_path}"
+fi
+
+# IMPORTANT
+echo "
+NOTE: For hhtop installation, please make sure to run the following command
+	after executing this script
+	-> source \"$HOME/.bashrc\"
+"
+
+sleep 1

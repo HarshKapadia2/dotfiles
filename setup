@@ -183,6 +183,12 @@ if [[ "${is_delete_dotfiles_setup}" == "${TRUE}" ]]; then
 	git checkout HEAD -- "${dotfiles_repo_path}/.vimrc"
 
 	echo ""
+	echo "Uninstalling hhtop..."
+	echo ""
+
+	"${dotfiles_repo_path}/hhtop/uninstall"
+
+	echo ""
 	echo "Done!"
 	echo ""
 
@@ -247,6 +253,14 @@ if [[ "${is_dotfiles_to_install}" == "${TRUE}" ]]; then
 				"$HOME"
 		fi
 	done
+
+	echo ""
+	echo "Done!"
+	echo ""
+	echo "Setting up hhtop..."
+	echo ""
+
+	"${dotfiles_repo_path}/hhtop/install"
 
 	echo ""
 	echo "Done!"

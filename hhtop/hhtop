@@ -27,21 +27,21 @@ fi
 
 if [[ ${num_screen_cols} -le ${num_screen_col_cutoff} ]]; then
 	if [[ ${num_cpus} -le ${num_cpu_cutoff_low} ]]; then
-		rm "${htoprc_dir}/htoprc"
+		rm --force "${htoprc_dir}/htoprc"
 		cp "${hhtop_dir}/htoprc.1.bkp" "${htoprc_dir}/htoprc"
 	else
-		rm "${htoprc_dir}/htoprc"
+		rm --force "${htoprc_dir}/htoprc"
 		cp "${hhtop_dir}/htoprc.2.bkp" "${htoprc_dir}/htoprc"
 	fi
 else
 	if [[ ${num_cpus} -le ${num_cpu_cutoff_low} ]]; then
-		rm "${htoprc_dir}/htoprc"
+		rm --force "${htoprc_dir}/htoprc"
 		cp "${hhtop_dir}/htoprc.1.bkp" "${htoprc_dir}/htoprc"
 	elif [[ ${num_cpus} -gt ${num_cpu_cutoff_high} ]]; then
-		rm "${htoprc_dir}/htoprc"
+		rm --force "${htoprc_dir}/htoprc"
 		cp "${hhtop_dir}/htoprc.2.bkp" "${htoprc_dir}/htoprc"
 	else
-		rm "${htoprc_dir}/htoprc"
+		rm --force "${htoprc_dir}/htoprc"
 		cp "${htoprc_dir}/htoprc.3.bkp" "${htoprc_dir}/htoprc"
 	fi
 fi

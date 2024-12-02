@@ -10,7 +10,7 @@
 -   [Prettier](https://prettier.io): [`.prettierrc`](.prettierrc)
 -   [tmux](https://tmux.github.io): [`.tmux.conf`](.tmux.conf)
 -   [Vim](https://www.vim.org): [`.vimrc`](.vimrc)
--	[htop](https://htop.dev): [hhtop](htop)
+-	[htop](https://htop.dev): [hhtop](hhtop)
 
 ## Setup
 

@@ -9,7 +9,7 @@ below).
 -	To install hhtop
 
 	```bash
-	$ ./install
+	$ ./install # This script is located in the dotfiles/hhtop directory
 	$ source "$HOME/.bashrc" # So that changes reflect in the current terminal
 	```
 
@@ -24,7 +24,7 @@ below).
 -	To uninstall hhtop
 
 	```bash
-	$ ./uninstall
+	$ ./uninstall # This script is located in the dotfiles/hhtop directory
 	$ source "$HOME/.bashrc" # So that changes reflect in the current terminal
 	```
 
@@ -54,7 +54,7 @@ below).
 	| > 192 | > 180 | `htoprc.2.bkp` |
 
 -	The `.bkp` file extension stands for 'backup' in this case. There is nothing
-	special about the extension. It's a regular ASCII text file.
+	special about the file. It's a regular ASCII text file.
 
 -	hhtop abbreviation meaning
 	-	hhtop = Harsh's htop

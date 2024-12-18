@@ -189,8 +189,17 @@ if [[ "${is_delete_dotfiles_setup}" == "${TRUE}" ]]; then
 	"${dotfiles_repo_path}/hhtop/uninstall"
 
 	echo ""
-	echo "Done!"
+	echo "Disabling custom prompt (ps1)..."
 	echo ""
+
+	"${dotfiles_repo_path}/customize-ps1/disable"
+
+	echo "
+Done!
+
+NOTE: Please run 'source $HOME/.bashrc' to make changes take effect in the
+      current shell.
+"
 
 	# Exit here so that no other flags are executed
 	exit 0
@@ -263,6 +272,15 @@ if [[ "${is_dotfiles_to_install}" == "${TRUE}" ]]; then
 	"${dotfiles_repo_path}/hhtop/install"
 
 	echo ""
-	echo "Done!"
+	echo "Setting up custon prompt (ps1)..."
 	echo ""
+
+	"${dotfiles_repo_path}/customize-ps1/install"
+
+	echo "
+Done!
+
+NOTE: Please run 'source $HOME/.bashrc' to make changes take effect in the
+      current shell.
+"
 fi

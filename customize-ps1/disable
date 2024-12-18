@@ -1,0 +1,25 @@
+#! /bin/bash
+
+set -Eeuo pipefail
+
+bashrc_path="$HOME/.bashrc"
+
+# Remove the `customize_ps1` function call
+if [[ "$(grep --line-regexp 'customize_ps1' "${bashrc_path}")" != "" ]]; then
+	grep --invert-match --line-regexp 'customize_ps1' "${bashrc_path}" > \
+		"$HOME/.bashrc_temp"
+	mv "$HOME/.bashrc_temp" "${bashrc_path}"
+fi
+
+# Un-symlink the `.cust-ps1-vars.sh` file
+if   [[ -L "$HOME/.cust-ps1-vars.sh" ]]; then
+	echo ""
+	echo "Deleting '.cust-ps1-vars.sh' symlink."
+	echo ""
+
+	rm "$HOME/.cust-ps1-vars.sh"
+
+	echo ""
+	echo "Done un-symlinking '.cust-ps1-vars.sh'!"
+	echo ""
+fi

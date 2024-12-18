@@ -1,0 +1,71 @@
+#! /bin/bash
+
+set -Eeuo pipefail
+
+bashrc_path="$HOME/.bashrc"
+cust_ps1_dir_path="$(dirname "$(realpath "$0")")"
+
+# Create a copy of .bashrc as a backup
+if [[ ! -f "$HOME/.bashrc_copy" ]]; then
+	cp "${bashrc_path}" "$HOME/.bashrc_copy"
+fi
+
+# Download the latest git-prompt.sh script
+if [[ -f "$HOME/.git-prompt.sh" ]]; then
+	rm "$HOME/.git-prompt.sh"
+fi
+
+echo ""
+echo "Downloading git-prompt.sh..."
+echo ""
+
+curl  -o "$HOME/.git-prompt.sh" \
+	"https://raw.githubusercontent.com/git/git/refs/heads/master/contrib/completion/git-prompt.sh"
+
+echo ""
+echo "Done downloading git-prompt.sh!"
+echo ""
+
+# Link variable value script
+if [[ ! -f "$HOME/.cust-ps1-vars.sh" ]]; then
+	ln --symbolic "${cust_ps1_dir_path}/cust-ps1-vars" \
+		"$HOME/.cust-ps1-vars.sh"
+fi
+
+# Add the handling function to .bashrc
+if [[ "$(grep "customize_ps1() {" "${bashrc_path}")" == "" ]]; then
+	# shellcheck disable=SC2154
+	echo "
+customize_ps1() {
+	if [[ ! -f \"\$HOME/.git-prompt.sh\" || ! -f \"\$HOME/.cust-ps1-vars.sh\" ]]; then
+		return
+	fi
+
+	source \"\$HOME/.git-prompt.sh\"
+	source \"\$HOME/.cust-ps1-vars.sh\"
+
+	PROMPT_COMMAND=\"\${prompt_command_value}\"
+}
+
+customize_ps1
+" >> "${bashrc_path}"
+
+elif [[ "$(grep "# customize_ps1" "${bashrc_path}")" != "" ]]; then
+	grep --invert-match "# customize_ps1" "${bashrc_path}" > \
+		"$HOME/.bashrc_temp"
+
+	echo "
+customize_ps1
+" >> "$HOME/.bashrc_temp"
+
+	mv "$HOME/.bashrc_temp" "${bashrc_path}"
+
+else
+	cp "${bashrc_path}" "$HOME/.bashrc_temp"
+
+	echo "
+customize_ps1
+" >> "$HOME/.bashrc_temp"
+
+	mv "$HOME/.bashrc_temp" "${bashrc_path}"
+fi

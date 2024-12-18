@@ -2,7 +2,7 @@
 
 [Harsh Kapadia](https://harshkapadia.me)'s dotfiles.
 
-## Dotfiles Present
+## Dotfiles and Scripts Present
 
 -   [clang-format](https://clang.llvm.org/docs/ClangFormat.html): [`.clang-format`](.clang-format)
 -   [EditorConfig](https://editorconfig.org): [`.editorconfig`](.editorconfig)
@@ -11,12 +11,13 @@
 -   [tmux](https://tmux.github.io): [`.tmux.conf`](.tmux.conf)
 -   [Vim](https://www.vim.org): [`.vimrc`](.vimrc)
 -	[htop](https://htop.dev): [hhtop](hhtop)
+-	[PS1 customization](customize-ps1)
 
 ## Setup
 
 The [`setup` script](setup) will symlink dotfiles to the current user's home
-directory and optionally install packages. The behaviour depends on the
-arguments with which the script is invoked.
+directory, install some scripts and optionally install packages. The behaviour
+depends on the arguments with which the script is invoked.
 
 ### Arguments
 
@@ -29,10 +30,19 @@ arguments with which the script is invoked.
 -   Symlink all dotfiles to the current user's home directory.
     -   Dotfiles that already exist in the current user's home directory will be
         skipped.
+-	Add [hhtop](hhtop).
+-	Add Bash [PS1 customization](customize-ps1) for Git.
 -   No packages will be installed.
+-	NOTE: Please run the following command to make changes reflect in the current
+	shell
+
+	```bash
+	$ source $HOME/.bashrc
+	```
 
 #### `--force-setup`
 
+-	Requirement: Optional
 -   For every Dotfile in the repository, delete the corresponding
     dotfile/symlink in the current user's home directory (if it exists) and then
     Symlink the Dotfile.
@@ -40,6 +50,7 @@ arguments with which the script is invoked.
 
 #### `--install-pkg`
 
+-	Requirement: Optional
 -   Install packages and plugin-extras on supported OSs. Symlinking (setup) will
 	be done after package installation.
 -   Requirement: Optional, but note that some Vim plugins depend on packages to
@@ -70,16 +81,25 @@ arguments with which the script is invoked.
 
 #### `--delete`
 
+-	Requirement: Optional
 -	Remove all dotfile symlinks and delete any related files, like all Vim
 	plugins mentioned in the .vimrc file.
+-	hhtop and PS1 customizations are disabled.
+	-	The `.bashrc` file will still have the functions, but the function calls
+		will be removed. (The function is not removed from `.bashrc`.)
 -	Packages are not uninstalled.
 -	No other flag will be executed if this flag is mentioned.
--	Requirement: Optional
+-	NOTE: Please run the following command to make changes reflect in the current
+	shell
+
+	```bash
+	$ source $HOME/.bashrc
+	```
 
 #### `--help`
 
--   Print this command usage instruction.
 -   Requirement: Optional
+-   Print this command usage instruction.
 
 ### Execution Instructions
 

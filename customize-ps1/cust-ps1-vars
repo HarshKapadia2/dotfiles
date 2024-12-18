@@ -1,0 +1,13 @@
+#! /bin/bash
+
+# shellcheck disable=SC2034
+
+GIT_PS1_SHOWDIRTYSTATE="non-empty-value"
+GIT_PS1_SHOWSTASHSTATE="non-empty-value"
+GIT_PS1_SHOWUNTRACKEDFILES="non-empty-value"
+GIT_PS1_SHOWCOLORHINTS="non-empty-value"
+GIT_PS1_SHOWUPSTREAM="auto git"
+GIT_PS1_SHOWCONFLICTSTATE="yes"
+
+# prompt_command_value='__git_ps1 "\u@\h:\w" "\\\$ "'
+prompt_command_value='__git_ps1 "\[\e[0;92m\]\u@\h\[\e[0m\]:\[\e[0;94m\]\w\[\e[0m\]" "\\\$ "'

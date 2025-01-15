@@ -40,8 +40,8 @@ OPTIONS
 		Requirement: Optional, but note that some Vim plugins depend on packages
 		to be installed to work.
 		Installed packages: bear, build-essential, clang-format, cmake, curl,
-		gh, git, man, net-tools, nodejs, npm, python3, python3-dev, shellcheck,
-		shfmt, tmux, tree, vim
+		gh, git, man, net-tools, nodejs, npm, prettier, python3, python3-dev,
+		shellcheck, shfmt, tmux, tree, vim
 		Supported OSs: Debian-based distros that support APT, like Ubuntu.
 		NOTE: shfmt is available only on Ubuntu >= v22 and so the script will
 		fail on Ubuntu OSs less than that version.
@@ -217,7 +217,13 @@ if [[ "${is_install_pkg}" == "${TRUE}" ]]; then
 			gh git man net-tools nodejs npm python3 python3-dev shellcheck \
 			shfmt tmux tree vim
 
+		sleep 5
+
+		npm install --global prettier
+
 		add_youcompleteme_extra_support
+
+		sleep 5
 
 		echo ""
 		echo "Package and plugin-extras installation complete!"

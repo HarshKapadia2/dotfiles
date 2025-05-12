@@ -67,6 +67,8 @@ depends on the arguments with which the script is invoked.
     - `net-tools` (For `ifconfig`)
     - `nodejs` (For Prettier)
     - `npm` (For Prettier)
+    - `openssh-client`
+    - `openssh-server`
     - `prettier` (For Prettier)
     - `python3`
     - `python3-dev` (For YouCompleteMe Vim plugin)

@@ -1,0 +1,43 @@
+#! /bin/bash
+
+set -Eeuo pipefail
+
+readonly TRUE=1
+readonly FALSE=0
+
+is_install_forced=${FALSE}
+
+# Handle arguments
+if [[ "$#" -gt 0 ]]; then
+	while [[ "$#" -gt 0 ]]; do
+		case "$1" in
+			"--force")
+				is_install_forced=${TRUE}
+				shift
+				;;
+			*)
+				echo ""
+				echo "Error: Invalid argument '$1' passed."
+				echo ""
+				exit 1
+				;;
+		esac
+	done
+fi
+
+# Install KVM packages and configure user
+if test "${is_install_forced}" == "${TRUE}" || ! command -v "virsh"; then
+	sudo apt-get update
+	sudo apt-get install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virtinst virt-manager cpu-checker libguestfs-tools libosinfo-bin libnss-libvirt
+
+	sudo adduser "$(whoami)" libvirt
+	sudo adduser "$(whoami)" kvm
+
+	sudo systemctl enable --now libvirtd
+
+	echo ""
+	echo "Done! KVM/QEMU installed!"
+	echo ""
+else
+	echo "Looks like KVM is already configured. To force install, use the '--force' option."
+fi

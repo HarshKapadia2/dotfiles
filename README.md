@@ -12,6 +12,7 @@
 - [Vim](https://www.vim.org): [`.vimrc`](.vimrc)
 - [htop](https://htop.dev): [hhtop](hhtop)
 - [PS1 customization](customize-ps1)
+- [KVM/QEMU](kvm-qemu)
 
 ## Setup
 

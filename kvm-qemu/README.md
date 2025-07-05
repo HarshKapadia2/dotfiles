@@ -1,6 +1,11 @@
 # KVM/QEMU
 
-[All about KVM and QEMU](https://linux.harshkapadia.me/kvm-qemu)
+Instructions to use the scripts in this directory:
+[A Practical Guide to Using KVM/QEMU](https://linux.harshkapadia.me/kvm-qemu)
+
+<details>
+
+<summary>Old instructions</summary>
 
 ## Setup
 
@@ -47,3 +52,5 @@
     - Very easy to do this through `virt-manager`
         - Open up a VM, click on the blue 'i' button at the top and go to the
           'Video' section.
+
+</details>

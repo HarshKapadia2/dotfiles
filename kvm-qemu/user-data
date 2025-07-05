@@ -1,0 +1,23 @@
+#cloud-config
+
+# The above comment is required by cloud-init to recognize the file. Do not
+# remove it.
+#
+# Documentation for autoinstall:
+# - https://askubuntu.com/questions/1473018/installing-packages-via-autoinstall-vs-user-data
+# - https://canonical-subiquity.readthedocs-hosted.com/en/latest/explanation/cloudinit-autoinstall-interaction.html
+# - https://canonical-subiquity.readthedocs-hosted.com/en/latest/reference/autoinstall-reference.html
+
+autoinstall:
+  version: 1
+  identity:
+    realname: harsh
+    username: harsh
+    password: "$y$j9T$ybLGApDBbVTQ9wmqN9uAt/$573Sfobb2R6ehnEhgzZfjttQVgRx2xzHP43rFaBC4j3" # 'harsh' generated using `mkpasswd`
+    hostname: harsh-test-1
+  storage:
+    layout:
+      name: lvm
+      sizing-policy: all
+      match:
+        size: smallest

@@ -1,0 +1,26 @@
+#! /bin/bash
+
+set -Eeuo pipefail
+
+# The `--osinfo` flag is the newer name for the `--os-variant` flag
+# The value for the `--osinfo` flag is the 'Short ID' from the command
+# `osinfo-query os`. This flag apparently allows for OS-specific optimizations.
+#
+# Multiple networks can be provided by mentioning the `--network` flag multiple
+# times as follows: `--network network="hostbridge" --network bridge="br1"`
+#
+# The `autoinstall` kernel parameter is required so that the installer does not
+# wait for user input to start the autoinstall (https://canonical-subiquity.readthedocs-hosted.com/en/latest/explanation/zero-touch-autoinstall.html)
+
+virt-install \
+	--name ubuntu-vm-4 \
+	--vcpus 2 \
+	--memory 4096 \
+	--osinfo ubuntu24.04 \
+	--network network=hostbridge \
+	--graphics vnc,listen=0.0.0.0 \
+	--location /mnt/ssd-nvme2n1p1/iso-files/ubuntu-24.04.2-desktop-amd64.iso,kernel=casper/vmlinuz,initrd=casper/initrd \
+	--extra-args autoinstall \
+	--cloud-init user-data=./user-data \
+	--disk path=/mnt/ssd-nvme2n1p1/vm-disks/ubuntu-24.04-disk-4.qcow2,size=20,format=qcow2 \
+	--noautoconsole

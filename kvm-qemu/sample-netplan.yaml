@@ -12,10 +12,10 @@ network:
     version: 2
     renderer: networkd
     ethernets:
-        eno1:
+        eno1: # Physical interface
             dhcp4: true
             dhcp-identifier: mac
-        eno2:
+        eno2: # Physical interface
             dhcp4: true
             dhcp-identifier: mac
     bridges:
@@ -24,7 +24,7 @@ network:
             dhcp-identifier: mac
             interfaces:
                 - eno2
-        br1: # Secondary/optional bridge in case VMs need multiple interfaces
+        br1: # Optional bridge in case VMs need multiple interfaces
             dhcp4: true
             dhcp-identifier: mac
             interfaces:

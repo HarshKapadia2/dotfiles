@@ -37,6 +37,7 @@ if test "${is_install_forced}" == "${TRUE}" || ! command -v "virsh"; then
 
 	echo ""
 	echo "Done! KVM/QEMU installed!"
+	echo "Please reboot the machine before making any changes."
 	echo ""
 else
 	echo "Looks like KVM is already configured. To force install, use the '--force' option."

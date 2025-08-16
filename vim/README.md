@@ -12,4 +12,4 @@ plugins. This file also includes all the settings from the above 'base' `.vimrc`
 file.
 
 More usage instructions can be found in [the `--vim` option's
-documentation](README.md#documentation).
+documentation](../README.md#documentation).

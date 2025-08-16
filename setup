@@ -1,73 +1,151 @@
 #! /bin/bash
 
+# https://github.com/HarshKapadia2/dotfiles
+
 set -Eeuo pipefail
 
 readonly FALSE=0
 readonly TRUE=1
 
+underline_start=$(tput smul)
+underline_end=$(tput rmul)
+
 dotfiles_repo_path="$(dirname "$(realpath "$0")")"
+
 is_force_setup=${FALSE}
 is_install_pkg=${FALSE}
 is_dotfiles_to_install=${TRUE}
 is_delete_dotfiles_setup=${FALSE}
+vimrc_type="base"
 
 # Usage instructions
 print_usage() {
 	echo "
 NAME
-	setup - Setup Dotfiles for the current user and optionally install packages.
+	setup - Setup Harsh Kapadia's dotfiles, and install scripts and packages
 
 SYNOPSIS
-	./setup [--force-setup] [--install-pkg] [--help]
+	./setup [--force-setup] [--install-pkg] [--vim ${underline_start}vimrc_type${underline_end}]
+		[--delete] [-h|--help]
 
 DESCRIPTION
-	Symlink Dotfiles to current user's home directory and optionally install
-	packages.
+	This utility can symlink dotfiles to the current user's home directory,
+	install programs (scripts) and packages, and remove/undo the setup as much
+	as possible.
 
 	Dotfiles supported: .clang-format, .editorconfig, .gitconfig, .prettierrc,
-	.tmux.conf, .vimrc
+	.tmux.conf, .vimrc (with and without plugins)
 
 OPTIONS
+	If no options are given, dotfiles are symlinked (ones already present are
+	skipped), the custom 'hhtop' utility is setup and Bash's PS1 is customized
+	to display Git repository information.
+
 	--force-setup
-		For every Dotfile in the repository, delete the corresponding
-		Dotfile/Symlink in the current user's home directory (if it exists) and
-		then Symlink the Dotfile.
+		For every dotfile in the repository, delete the corresponding
+		dotfile/symlink in the current user's home directory (if it exists) and
+		then symlink the dotfile in this repository in its place.
+
 		Requirement: Optional
 
+	--vim ${underline_start}vimrc_type${underline_end}
+		Choose which type of Vim configuration file should be installed.
+
+		The supported ${underline_start}vimrc_type${underline_end} values are 'base' and 'plugins' (without
+		quotes for both values), with the default value being 'base' if the
+		option is not used.
+
+		Requirement: Optional
+
+		The 'base' value installs a barebones .vimrc file that only configures
+		the editor's in-built settings and has no external dependencies in terms
+		of packages or plugins.
+
+		If the 'plugins' value is used, a .vimrc file that uses vim-plug to
+		install and manage Vim plugins will be symlinked. Check the
+		'vim/plugins/.vimrc' file for the plugins that will be installed. This
+		file also includes all the settings from the above 'base' .vimrc file.
+		Quite a lot of the plugins require external packages to function, so
+		using this value will also automatically install all packages that are
+		installed by ${underline_start}--install-pkg${underline_end}.
+
+		Examples:
+		./setup --vim base                  # Default value that symlinks
+		                                    # vim/base/.vimrc
+
+		./setup --vim base --install-pkg    # Symlinks vim/base/.vimrc and
+		                                    # only installs 'General packages'
+		                                    # installed by ${underline_start}--install-pkg${underline_end}
+
+		./setup --vim plugins               # Symlinks vim/plugins/.vimrc and
+		                                    # installs all packages installed by
+		                                    # ${underline_start}--install-pkg${underline_end}
+
+		./setup --vim plugins --install-pkg # Same as the above command
+
 	--install-pkg
-		Install packages and plugin-extras on supported OSs. Symlinking  (setup)
-		will be done after package installation.
+		Install packages and Vim plugin-extras on supported OSs.
+
+		The packages installed by this option depend on the value provided to
+		the ${underline_start}--vim${underline_end} option. For the value 'base' (default if option not
+		mentioned), only 'General packages' (listed below) are installed. For
+		the 'plugins' value, both, the 'General packages' and the 'Vim
+		plugin-specific packages' (listed below), are installed.
+
 		Requirement: Optional, but note that some Vim plugins depend on packages
 		to be installed to work.
-		Installed packages: bear, build-essential, clang-format, cmake, curl,
-		gh, git, man, net-tools, nodejs, npm, openssh-client, openssh-server,
-		prettier, python3, python3-dev, shellcheck, shfmt, tmux, tree, vim
+
+		General packages: curl, gh, git, man, net-tools, openssh-client,
+		openssh-server, tmux, tree, vim
+
+		Vim plugin-specific packages: bear, build-essential, clang-format,
+		cmake, nodejs, npm, prettier, python3, python3-dev, shellcheck, shfmt
+
 		Supported OSs: Debian-based distros that support APT, like Ubuntu.
+
 		NOTE: shfmt is available only on Ubuntu >= v22 and so the script will
 		fail on Ubuntu OSs less than that version.
 
 	--delete
 		Remove all dotfile symlinks and delete any related files, like all Vim
-		plugins mentioned in the .vimrc file. Packages are not uninstalled. No
-		other flag will be executed if this flag is mentioned.
+		plugins mentioned in the .vimrc file. It will also attempt to clean the
+		insalled programs (scripts) like 'hhtop'. Packages are not uninstalled.
 
-	--help
-		Print this command usage instruction.
 		Requirement: Optional
 
+		NOTE: No other option will be executed if this option is mentioned, with
+		the exception of ${underline_start}-h${underline_end} or ${underline_start}--help${underline_end}.
+
+	-h, --help
+		Print this command usage instruction.
+
+		Requirement: Optional
+
+		NOTE: No other option will be executed if this option is mentioned.
+
 AUTHOR
-	Harsh Kapadia (https://harshkapadia.me)
+	Harsh Kapadia ( ${underline_start}https://harshkapadia.me${underline_end} )
+
+WWW
+	${underline_start}https://github.com/HarshKapadia2/dotfiles${underline_end}
 
 REPORTING BUGS
 	Report bugs and improvements at
-	https://github.com/HarshKapadia2/dotfiles/issues.
+	${underline_start}https://github.com/HarshKapadia2/dotfiles/issues${underline_end} .
 "
 }
 
 # Install Bash Language Server for YouCompleteMe Vim plugin
 add_youcompleteme_extra_support() {
 	lsp_dir="${dotfiles_repo_path}/lsp-examples"
-	vimrc_path="${dotfiles_repo_path}/.vimrc"
+
+	vimrc_path=""
+	if [[ "${vimrc_type}" == "plugins" ]]; then
+		vimrc_path="${dotfiles_repo_path}/vim/plugins/.vimrc"
+	else
+		vimrc_path="${dotfiles_repo_path}/vim/base/.vimrc"
+	fi
+
 	curr_vimrc_last_line="$(tail --lines=1 "${vimrc_path}")"
 	vimrc_line_to_add="source ${lsp_dir}/vimrc.generated"
 
@@ -86,7 +164,7 @@ add_youcompleteme_extra_support() {
 	cd "${lsp_dir}" && ./install.py "--enable-bash"
 	cd "${curr_dir}"
 
-	echo "${vimrc_line_to_add}" >> "${dotfiles_repo_path}/.vimrc"
+	echo "${vimrc_line_to_add}" >> "${vimrc_path}"
 
 	echo ""
 	echo "Above line added to .vimrc!"
@@ -100,6 +178,26 @@ if [[ "$#" -gt 0 ]]; then
 				is_force_setup=${TRUE}
 				shift
 				;;
+			"--vim")
+				if [[ "$2" == "plugins" ]]; then
+					vimrc_type="plugins"
+					is_install_pkg=${TRUE}
+					shift
+				elif [[ "$2" == "base" ]]; then
+					vimrc_type="base"
+					shift
+				else
+					echo "
+NOTE: Ignoring invalid '--vim' option value '$2' and using default value 'base'.
+"
+
+					if [[ "${2:0:2}" != "--" ]]; then
+						shift
+					fi
+				fi
+
+				shift
+				;;
 			"--install-pkg")
 				is_install_pkg=${TRUE}
 				shift
@@ -109,13 +207,13 @@ if [[ "$#" -gt 0 ]]; then
 				is_dotfiles_to_install=${FALSE}
 				shift
 				;;
-			"--help")
+			"-h" | "--help")
 				print_usage
 				exit 0
 				;;
 			*)
 				echo ""
-				echo "NOTE: Ignoring invalid argument $1."
+				echo "NOTE: Ignoring invalid option '$1'."
 				echo ""
 				shift
 				;;
@@ -125,7 +223,7 @@ fi
 
 # Remove all dotfile symlinks and delete other related files
 # Eg of related files: Vim's installed plugins
-# NOTE: Keep deletion as the first snippet, so that other flags (if entered
+# NOTE: Keep deletion as the first snippet, so that other options (if entered
 # alongside `--delete`) are not executed
 if [[ "${is_delete_dotfiles_setup}" == "${TRUE}" ]]; then
 	echo ""
@@ -148,39 +246,53 @@ if [[ "${is_delete_dotfiles_setup}" == "${TRUE}" ]]; then
 		fi
 	done
 
+	vimrc_path=""
+
+	# Remove .vimrc symlink
+	if [[ -L "$HOME/.vimrc" ]]; then
+		vimrc_path=$(realpath "$HOME/.vimrc")
+		echo "Deleting .vimrc symlink."
+		rm "$HOME/.vimrc"
+	fi
+
+	echo "${vimrc_path}"
+
 	# Remove Vim plugins listed in .vimrc, if they exist
-	vim_plugin_list=$(grep "Plug '" "${dotfiles_repo_path}/.vimrc" | awk '{print $2}' | awk -F "/" '{print $2}' | awk -F "'" '{print $1}')
+	if [[ "${vimrc_path}" == *"plugins"* ]]; then
+		echo "inside"
+		vim_plugin_list=$(grep "Plug '" "${dotfiles_repo_path}/vim/plugins/.vimrc" | awk '{print $2}' | awk -F "/" '{print $2}' | awk -F "'" '{print $1}')
 
-	for plugin_name in ${vim_plugin_list}; do
-		plugin_dir="$HOME/.vim/plugged/${plugin_name}"
+		for plugin_name in ${vim_plugin_list}; do
+			plugin_dir="$HOME/.vim/plugged/${plugin_name}"
 
-		if [[ -d "${plugin_dir}" ]]; then
-			echo "Deleting plugin '${plugin_name}'."
-			rm -rf "${plugin_dir}"
+			if [[ -d "${plugin_dir}" ]]; then
+				echo "Deleting plugin '${plugin_name}'."
+				rm -rf "${plugin_dir}"
+			else
+				echo "Plugin '${plugin_name}' not found. Skipping."
+			fi
+		done
+
+		if [[ -f "$HOME/.vim/autoload/plug.vim" ]]; then
+			echo "Deleting file 'plug.vim'."
+			rm "$HOME/.vim/autoload/plug.vim"
 		else
-			echo "Plugin '${plugin_name}' not found. Skipping."
+			echo "File 'plug.vim' not found. Skipping."
 		fi
-	done
 
-	if [[ -f "$HOME/.vim/autoload/plug.vim" ]]; then
-		echo "Deleting file 'plug.vim'."
-		rm "$HOME/.vim/autoload/plug.vim"
-	else
-		echo "File 'plug.vim' not found. Skipping."
+		lsp_dir="${dotfiles_repo_path}/lsp-examples"
+		if [[ -d "${lsp_dir}" ]]; then
+			echo "Deleting 'lsp-examples' repo."
+			rm -rf "${lsp_dir}"
+		else
+			echo "'lsp-examples' repo not found. Skipping."
+		fi
+
+		# Hard reset the .vimrc file to remove the 'source' line added for the
+		# 'lsp-examples' repo.
+		cd "${dotfiles_repo_path}"
+		git checkout HEAD -- "${dotfiles_repo_path}/vim/plugins/.vimrc"
 	fi
-
-	lsp_dir="${dotfiles_repo_path}/lsp-examples"
-	if [[ -d "${lsp_dir}" ]]; then
-		echo "Deleting 'lsp-examples' repo."
-		rm -rf "${lsp_dir}"
-	else
-		echo "'lsp-examples' repo not found. Skipping."
-	fi
-
-	# Hard reset the .vimrc file to remove the 'source' line added for the
-	# 'lsp-examples' repo.
-	cd "${dotfiles_repo_path}"
-	git checkout HEAD -- "${dotfiles_repo_path}/.vimrc"
 
 	echo ""
 	echo "Uninstalling hhtop..."
@@ -201,55 +313,73 @@ NOTE: Please run 'source $HOME/.bashrc' to make changes take effect in the
       current shell.
 "
 
-	# Exit here so that no other flags are executed
+	# Exit here so that no other options are executed
 	exit 0
 fi
 
-# Install packages and plugin-extras
+# Install packages and Vim plugin-extras
 if [[ "${is_install_pkg}" == "${TRUE}" ]]; then
 	if command -v "apt-get"; then
 		echo ""
-		echo "Installing packages..."
+		echo "Installing general packages..."
 		echo ""
 
 		sudo apt-get update
-		sudo apt-get install -y bear build-essential clang-format cmake curl \
-			gh git man net-tools openssh-client openssh-server python3 \
-			python3-dev shellcheck shfmt tmux tree vim
-
-		sleep 2
-
-		# Node.js and npm installation using Node Version Manager (nvm) to avoid
-		# global package installation permission issues
-		curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-		sleep 1
-		export NVM_DIR="$HOME/.nvm"
-		if [[ -s "$NVM_DIR/nvm.sh" ]]; then
-			# shellcheck disable=SC1091
-			source "$NVM_DIR/nvm.sh" # This loads nvm
-		fi
-		if [[ -s "$NVM_DIR/bash_completion" ]]; then
-			# shellcheck disable=SC1091
-			source "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-		fi
-		sleep 2
-		nvm install "lts/*"
-		nvm use "lts/*"
-		sleep 2
-		npm install --global prettier
-
-		add_youcompleteme_extra_support
-
-		sleep 2
+		sudo apt-get install -y curl gh git man net-tools openssh-client \
+			openssh-server tmux tree vim
 
 		echo ""
-		echo "Package and plugin-extras installation complete!"
+		echo "General package installation complete!"
 		echo ""
+
+		if [[ "${vimrc_type}" == "plugins" ]]; then
+			echo ""
+			echo "Installing Vim plugin-specific packages and scripts..."
+			echo ""
+
+			sudo apt-get install -y bear build-essential clang-format cmake \
+				python3 python3-dev shellcheck shfmt
+
+			sleep 2
+
+			# Node.js and npm installation using Node Version Manager (nvm) to avoid
+			# global package installation permission issues
+			curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+
+			sleep 1
+
+			export NVM_DIR="$HOME/.nvm"
+
+			if [[ -s "$NVM_DIR/nvm.sh" ]]; then
+				# shellcheck disable=SC1091
+				source "$NVM_DIR/nvm.sh" # This loads nvm
+			fi
+			if [[ -s "$NVM_DIR/bash_completion" ]]; then
+				# shellcheck disable=SC1091
+				source "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+			fi
+
+			sleep 1
+
+			nvm install "lts/*"
+			nvm use "lts/*"
+
+			sleep 2
+
+			npm install --global prettier
+
+			add_youcompleteme_extra_support
+
+			sleep 1
+
+			echo ""
+			echo "Vim Plugin-specific packages and extras installation complete!"
+			echo ""
+		fi
 	else
-		echo ""
-		echo "NOTE: Skipped package installation as package manager is not
-supported."
-		echo ""
+		echo "
+NOTE: Skipped package installation as package manager is not supported.
+"
 	fi
 fi
 
@@ -279,12 +409,35 @@ if [[ "${is_dotfiles_to_install}" == "${TRUE}" ]]; then
 			echo "Symlinked ${file_name}!"
 			echo ""
 		else
-			printf "\nNOTE: Skipped Symlinking %s as it already exists in" \
+			printf "\nNOTE: Skipped symlinking '%s' as it already exists in" \
 				"${file_name}"
-			printf " %s. Use the '--force-setup' option to force Symlinking.\n" \
+			printf " '%s'. Use the '--force-setup' option to delete the existing file and force symlinking.\n" \
 				"$HOME"
 		fi
 	done
+
+	if [[ ("${is_force_setup}" == "${TRUE}") && (-L "$HOME/.vimrc") ]]; then
+		echo "Deleting .vimrc symlink."
+		rm "$HOME/.vimrc"
+	fi
+
+	if [[ ! -f "$HOME/.vimrc" ]]; then
+		if [[ "${vimrc_type}" == "plugins" ]]; then
+			ln --symbolic "${dotfiles_repo_path}/vim/plugins/.vimrc" \
+				"$HOME/.vimrc"
+		else
+			ln --symbolic "${dotfiles_repo_path}/vim/base/.vimrc" \
+				"$HOME/.vimrc"
+		fi
+
+		echo "Symlinked .vimrc!"
+		echo ""
+	else
+		echo "
+NOTE: Skipped symlinking '.vimrc' as it already exists in '$HOME'. Use the
+'--force-setup' option to delete the existing file and force symlinking.
+"
+	fi
 
 	echo ""
 	echo "Done!"

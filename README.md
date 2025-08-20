@@ -11,13 +11,16 @@
 - [Git](https://git-scm.com): [`.gitconfig`](.gitconfig)
 - [Prettier](https://prettier.io): [`.prettierrc`](.prettierrc)
 - [tmux](https://tmux.github.io): [`.tmux.conf`](.tmux.conf)
-- [Vim](https://www.vim.org): [vim](vim)
+- [vim](vim)
 
-### Scripts
+### Scripts and Utilities
 
-- [htop](https://htop.dev): [hhtop](hhtop)
-- [PS1 customization](customize-ps1)
-- [KVM/QEMU](kvm-qemu)
+NOTE: Scripts and utilities are selectively installed based on the options
+provided by the user. Please refer to the [documentation below](#documentation).
+
+- [hhtop](hhtop)
+- [KVM/QEMU](kvm-qemu) (Not installed by setup. Has to be run manually.)
+- [Prompt (PS1) customization](customize-ps1)
 
 ### Packages Installed
 
@@ -29,6 +32,7 @@ user. Please refer to the [documentation below](#documentation).
 - `curl`
 - `gh` (For GitHub auth)
 - `git`
+- `htop`
 - `man`
 - `net-tools` (For `ifconfig`)
 - `openssh-client`
@@ -66,7 +70,7 @@ $ cd ~/dotfiles
 # Run the setup script WITHOUT sudo permissions (the user will be requested for
 # the sudo password when required)
 # Read the documentation below to understand all the available options
-$ ./setup --vim plugins
+$ ./setup
 
 # Check if symlinked dotfiles are present
 $ ls -al ~
@@ -79,28 +83,32 @@ NAME
         setup - Setup Harsh Kapadia's dotfiles, and install scripts and packages
 
 SYNOPSIS
-        ./setup [--force-setup] [--install-pkg] [--vim vimrc_type]
-                [--delete] [-h|--help]
+        ./setup [--install-pkg] [--vim vimrc_type] [--ps1] [--hhtop]
+                [--force-setup] [--delete] [-h|--help]
+
 
 DESCRIPTION
         This utility can symlink dotfiles to the current user's home directory,
         install programs (scripts) and packages, and remove/undo the setup as much
         as possible.
 
-        Dotfiles supported: .clang-format, .editorconfig, .gitconfig, .prettierrc,
-        .tmux.conf, .vimrc (with and without plugins)
+        NOTE: It is required to run this script without the sudo command to install
+        files in the current user's directory rather than the root user's directory
+        (unless that is intended). This script will prompt the user for the sudo
+        password for operations that need it.
 
 OPTIONS
-        If no options are given, dotfiles are symlinked (ones already present are
-        skipped), the custom 'hhtop' utility is setup and Bash's PS1 is customized
-        to display Git repository information.
+        Default behaviour
+                Symlink dotfiles that arent't already present in the current user's home
+                directory. This behaviour holds unless modified by the options below.
 
-        --force-setup
-                For every dotfile in the repository, delete the corresponding
-                dotfile/symlink in the current user's home directory (if it exists) and
-                then symlink the dotfile in this repository in its place.
+                To force dotfile symlinking, use --force-setup.
 
-                Requirement: Optional
+                Dotfiles supported: .clang-format, .editorconfig, .gitconfig,
+                .prettierrc, .tmux.conf, .vimrc ('base' type - check --vim)
+
+        No options
+                Same as 'Default behaviour' above.
 
         --vim vimrc_type
                 Choose which type of Vim configuration file should be installed.
@@ -149,7 +157,7 @@ OPTIONS
                 Requirement: Optional, but note that some Vim plugins depend on packages
                 to be installed to work.
 
-                General packages: curl, gh, git, man, net-tools, openssh-client,
+                General packages: curl, gh, git, htop, man, net-tools, openssh-client,
                 openssh-server, tmux, tree, vim
 
                 Vim plugin-specific packages: bear, build-essential, clang-format,
@@ -159,6 +167,51 @@ OPTIONS
 
                 NOTE: shfmt is available only on Ubuntu >= v22 and so the script will
                 fail on Ubuntu OSs less than that version.
+
+        --ps1
+                Enable command line PS1 (prompt string/statement one) customization.
+
+                It shows the current Git branch and some other repository tracking
+                information if a Git repository exists in any particular directory on
+                the current working directory path. It also adds some color to the
+                prompt.
+
+                NOTE:
+                - These customizations are not enabled by default.
+                - This will modify the .bashrc file while enabling and disabling it.
+                - Use --delete to disable the customization.
+                        - Downloaded files will be deleted, but the changes in the .bashrc
+                        file will persist.
+                - Run `source $HOME/.bashrc` after enabling and disabling to make
+                changes reflect in the current terminal.
+
+                Requirement: Optional
+
+        --hhtop
+                Enable a wrapper utility for htop ( https://htop.dev ).
+
+                The utility sets different htoprc files depending on the number of
+                online CPUs and columns in the terminal. Refer to
+                https://github.com/HarshKapadia2/dotfiles/tree/main/hhtop
+                for detailed information.
+
+                NOTE:
+                - This utility is not installed by default.
+                - This will modify the .bashrc file while installing and uninstalling.
+                - Use --delete to uninstall the utility.
+                        - htoprc files will be deleted, but the changes in the .bashrc
+                        file will persist.
+                - Run `source $HOME/.bashrc` after installing and uninstalling to make
+                changes reflect in the current terminal.
+
+                Requirement: Optional
+
+        --force-setup
+                For every dotfile in the repository, delete the corresponding
+                dotfile/symlink in the current user's home directory (if it exists) and
+                then symlink the dotfile in this repository in its place.
+
+                Requirement: Optional
 
         --delete
                 Remove all dotfile symlinks and delete any related files, like all Vim

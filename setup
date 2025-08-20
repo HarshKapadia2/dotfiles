@@ -1,52 +1,134 @@
 #! /bin/bash
 
-# https://github.com/HarshKapadia2/dotfiles
+# Source: https://github.com/HarshKapadia2/dotfiles
 
 set -Eeuo pipefail
 
 readonly FALSE=0
 readonly TRUE=1
-
 underline_start=$(tput smul)
+readonly underline_start
 underline_end=$(tput rmul)
-
+readonly underline_end
 dotfiles_repo_path="$(dirname "$(realpath "$0")")"
+readonly dotfiles_repo_path
 
 is_force_setup=${FALSE}
 is_install_pkg=${FALSE}
 is_dotfiles_to_install=${TRUE}
 is_delete_dotfiles_setup=${FALSE}
+is_install_ps1=${FALSE}
+is_install_hhtop=${FALSE}
+is_print_usage=${FALSE}
 vimrc_type="base"
 
-# Usage instructions
+# Handle command-line arguments
+if [[ "$#" -gt 0 ]]; then
+	while [[ "$#" -gt 0 ]]; do
+		case "$1" in
+			"--force-setup")
+				is_force_setup=${TRUE}
+				shift
+				;;
+			"--vim")
+				if [[ "$2" == "plugins" ]]; then
+					vimrc_type="plugins"
+					is_install_pkg=${TRUE}
+					shift
+				elif [[ "$2" == "base" ]]; then
+					vimrc_type="base"
+					shift
+				else
+					echo "
+NOTE: Ignoring invalid '--vim' option value '$2' and using default value 'base'.
+"
+
+					if [[ "${2:0:2}" != "--" ]]; then
+						shift
+					fi
+				fi
+
+				shift
+				;;
+			"--install-pkg")
+				is_install_pkg=${TRUE}
+				shift
+				;;
+			"--ps1")
+				is_install_ps1=${TRUE}
+				shift
+				;;
+			"--hhtop")
+				is_install_hhtop=${TRUE}
+				shift
+				;;
+			"--delete")
+				is_force_setup=${FALSE}
+				is_install_pkg=${FALSE}
+				is_dotfiles_to_install=${FALSE}
+				is_delete_dotfiles_setup=${TRUE}
+				is_install_ps1=${FALSE}
+				is_install_hhtop=${FALSE}
+				is_print_usage=${FALSE}
+
+				break
+				;;
+			"-h" | "--help")
+				is_force_setup=${FALSE}
+				is_install_pkg=${FALSE}
+				is_dotfiles_to_install=${FALSE}
+				is_delete_dotfiles_setup=${FALSE}
+				is_install_ps1=${FALSE}
+				is_install_hhtop=${FALSE}
+				is_print_usage=${TRUE}
+
+				break
+				;;
+			*)
+				echo ""
+				echo "NOTE: Ignoring invalid option '$1'."
+				echo ""
+				shift
+				;;
+		esac
+	done
+# Do not add an 'else' block here - check 'Default behaviour' in
+# documentation/command usage
+fi
+
+# Command usage instructions
 print_usage() {
 	echo "
 NAME
 	setup - Setup Harsh Kapadia's dotfiles, and install scripts and packages
 
 SYNOPSIS
-	./setup [--force-setup] [--install-pkg] [--vim ${underline_start}vimrc_type${underline_end}]
-		[--delete] [-h|--help]
+	./setup [--install-pkg] [--vim ${underline_start}vimrc_type${underline_end}] [--ps1] [--hhtop]
+		[--force-setup] [--delete] [-h|--help]
+		
 
 DESCRIPTION
 	This utility can symlink dotfiles to the current user's home directory,
 	install programs (scripts) and packages, and remove/undo the setup as much
 	as possible.
 
-	Dotfiles supported: .clang-format, .editorconfig, .gitconfig, .prettierrc,
-	.tmux.conf, .vimrc (with and without plugins)
+	NOTE: It is required to run this script without the sudo command to install
+	files in the current user's directory rather than the root user's directory
+	(unless that is intended). This script will prompt the user for the sudo
+	password for operations that need it.
 
 OPTIONS
-	If no options are given, dotfiles are symlinked (ones already present are
-	skipped), the custom 'hhtop' utility is setup and Bash's PS1 is customized
-	to display Git repository information.
+	Default behaviour
+		Symlink dotfiles that arent't already present in the current user's home
+		directory. This behaviour holds unless modified by the options below.
 
-	--force-setup
-		For every dotfile in the repository, delete the corresponding
-		dotfile/symlink in the current user's home directory (if it exists) and
-		then symlink the dotfile in this repository in its place.
+		To force dotfile symlinking, use ${underline_start}--force-setup${underline_end}.
 
-		Requirement: Optional
+		Dotfiles supported: .clang-format, .editorconfig, .gitconfig,
+		.prettierrc, .tmux.conf, .vimrc ('base' type - check ${underline_start}--vim${underline_end})
+
+	No options
+		Same as 'Default behaviour' above.
 
 	--vim ${underline_start}vimrc_type${underline_end}
 		Choose which type of Vim configuration file should be installed.
@@ -95,7 +177,7 @@ OPTIONS
 		Requirement: Optional, but note that some Vim plugins depend on packages
 		to be installed to work.
 
-		General packages: curl, gh, git, man, net-tools, openssh-client,
+		General packages: curl, gh, git, htop, man, net-tools, openssh-client,
 		openssh-server, tmux, tree, vim
 
 		Vim plugin-specific packages: bear, build-essential, clang-format,
@@ -106,15 +188,64 @@ OPTIONS
 		NOTE: shfmt is available only on Ubuntu >= v22 and so the script will
 		fail on Ubuntu OSs less than that version.
 
-	--delete
-		Remove all dotfile symlinks and delete any related files, like all Vim
-		plugins mentioned in the .vimrc file. It will also attempt to clean the
-		insalled programs (scripts) like 'hhtop'. Packages are not uninstalled.
+	--ps1
+		Enable command line PS1 (prompt string/statement one) customization.
+
+		It shows the current Git branch and some other repository tracking
+		information if a Git repository exists in any particular directory on
+		the current working directory path. It also adds some color to the
+		prompt.
 
 		Requirement: Optional
 
-		NOTE: No other option will be executed if this option is mentioned, with
-		the exception of ${underline_start}-h${underline_end} or ${underline_start}--help${underline_end}.
+		NOTE:
+		- These customizations are not enabled by default.
+		- This will modify the .bashrc file while enabling and disabling it.
+		- Use ${underline_start}--delete${underline_end} to disable the customization.
+			- Downloaded files will be deleted, but the changes in the .bashrc
+			file will persist.
+		- Run \`source \$HOME/.bashrc\` after enabling and disabling to make
+		changes reflect in the current terminal.
+
+	--hhtop
+		Enable a wrapper utility for htop ( ${underline_start}https://htop.dev${underline_end} ).
+
+		The utility installs htop and sets different htoprc files depending on
+		the number of online CPUs and columns in the terminal. Refer to 
+		${underline_start}https://github.com/HarshKapadia2/dotfiles/tree/main/hhtop${underline_end} 
+		for detailed information.
+
+		Requirement: Optional
+
+		NOTE:
+		- This utility is not installed by default.
+		- This will modify the .bashrc file while installing and uninstalling.
+		- Use ${underline_start}--delete${underline_end} to uninstall the utility.
+			- htoprc files will be deleted, but the changes in the .bashrc
+			file will persist.
+		- Run \`source \$HOME/.bashrc\` after installing and uninstalling to make
+		changes reflect in the current terminal.
+
+	--force-setup
+		For every dotfile in the repository, delete the corresponding
+		dotfile/symlink in the current user's home directory (if it exists) and
+		then symlink the dotfile in this repository in its place.
+
+		Requirement: Optional
+
+	--delete
+		Remove all dotfile symlinks and delete any related files, like all Vim
+		plugins mentioned in the .vimrc ('plugins' type) file. It will also clean
+		the insalled programs (scripts) like 'hhtop', but changes in the .bashrc
+		file will not be removed. Packages are not uninstalled.
+
+		Requirement: Optional
+
+		NOTE:
+		- No other option will be executed if this option is mentioned.
+		- All supported symlinked dotfiles will be deleted regardless of whether
+		they were installed by this setup or not.
+			- See 'Default behaviour' above for supported dotfiles.
 
 	-h, --help
 		Print this command usage instruction.
@@ -170,61 +301,12 @@ add_youcompleteme_extra_support() {
 	echo "Above line added to .vimrc!"
 }
 
-# Handle command-line arguments
-if [[ "$#" -gt 0 ]]; then
-	while [[ "$#" -gt 0 ]]; do
-		case "$1" in
-			"--force-setup")
-				is_force_setup=${TRUE}
-				shift
-				;;
-			"--vim")
-				if [[ "$2" == "plugins" ]]; then
-					vimrc_type="plugins"
-					is_install_pkg=${TRUE}
-					shift
-				elif [[ "$2" == "base" ]]; then
-					vimrc_type="base"
-					shift
-				else
-					echo "
-NOTE: Ignoring invalid '--vim' option value '$2' and using default value 'base'.
-"
-
-					if [[ "${2:0:2}" != "--" ]]; then
-						shift
-					fi
-				fi
-
-				shift
-				;;
-			"--install-pkg")
-				is_install_pkg=${TRUE}
-				shift
-				;;
-			"--delete")
-				is_delete_dotfiles_setup=${TRUE}
-				is_dotfiles_to_install=${FALSE}
-				shift
-				;;
-			"-h" | "--help")
-				print_usage
-				exit 0
-				;;
-			*)
-				echo ""
-				echo "NOTE: Ignoring invalid option '$1'."
-				echo ""
-				shift
-				;;
-		esac
-	done
+if  [[ "${is_print_usage}" == "${TRUE}" ]]; then
+	print_usage
 fi
 
 # Remove all dotfile symlinks and delete other related files
-# Eg of related files: Vim's installed plugins
-# NOTE: Keep deletion as the first snippet, so that other options (if entered
-# alongside `--delete`) are not executed
+# Example of related files: Vim's installed plugins
 if [[ "${is_delete_dotfiles_setup}" == "${TRUE}" ]]; then
 	echo ""
 	echo "Removing dotfile symlinks..."
@@ -254,8 +336,6 @@ if [[ "${is_delete_dotfiles_setup}" == "${TRUE}" ]]; then
 		echo "Deleting .vimrc symlink."
 		rm "$HOME/.vimrc"
 	fi
-
-	echo "${vimrc_path}"
 
 	# Remove Vim plugins listed in .vimrc, if they exist
 	if [[ "${vimrc_path}" == *"plugins"* ]]; then
@@ -295,26 +375,23 @@ if [[ "${is_delete_dotfiles_setup}" == "${TRUE}" ]]; then
 	fi
 
 	echo ""
-	echo "Uninstalling hhtop..."
+	echo "Uninstalling hhtop (if required)..."
 	echo ""
 
 	"${dotfiles_repo_path}/hhtop/uninstall"
 
 	echo ""
-	echo "Disabling custom prompt (ps1)..."
+	echo "Disabling prompt (PS1) customizations (if enabled)..."
 	echo ""
 
 	"${dotfiles_repo_path}/customize-ps1/disable"
 
 	echo "
-Done!
+Overall removal done!
 
 NOTE: Please run 'source $HOME/.bashrc' to make changes take effect in the
       current shell.
 "
-
-	# Exit here so that no other options are executed
-	exit 0
 fi
 
 # Install packages and Vim plugin-extras
@@ -325,7 +402,7 @@ if [[ "${is_install_pkg}" == "${TRUE}" ]]; then
 		echo ""
 
 		sudo apt-get update
-		sudo apt-get install -y curl gh git man net-tools openssh-client \
+		sudo apt-get install -y curl gh git htop man net-tools openssh-client \
 			openssh-server tmux tree vim
 
 		echo ""
@@ -442,16 +519,32 @@ NOTE: Skipped symlinking '.vimrc' as it already exists in '$HOME'. Use the
 	echo ""
 	echo "Done!"
 	echo ""
+
+fi
+
+# Install/enable PS1 customization
+if  [[ "${is_install_ps1}" == "${TRUE}" ]]; then
+	echo ""
+	echo "Setting up prompt (PS1) customization..."
+	echo ""
+
+	"${dotfiles_repo_path}/customize-ps1/install"
+
+	echo "
+Done!
+
+NOTE: Please run 'source $HOME/.bashrc' to make changes take effect in the
+      current shell.
+"
+fi
+
+# Install hhtop
+if  [[ "${is_install_hhtop}" == "${TRUE}" ]]; then
+	echo ""
 	echo "Setting up hhtop..."
 	echo ""
 
 	"${dotfiles_repo_path}/hhtop/install"
-
-	echo ""
-	echo "Setting up custon prompt (ps1)..."
-	echo ""
-
-	"${dotfiles_repo_path}/customize-ps1/install"
 
 	echo "
 Done!

@@ -3,7 +3,6 @@
 set -Eeuo pipefail
 
 htoprc_dir="$HOME/.config/htop"
-hhtop_dir=$(dirname "$(realpath "$0")")
 bashrc_path="$HOME/.bashrc"
 
 # Remove symlinks and if present, restore the original htoprc file

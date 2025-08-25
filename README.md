@@ -176,6 +176,8 @@ OPTIONS
                 the current working directory path. It also adds some color to the
                 prompt.
 
+                Requirement: Optional
+
                 NOTE:
                 - These customizations are not enabled by default.
                 - This will modify the .bashrc file while enabling and disabling it.
@@ -185,15 +187,15 @@ OPTIONS
                 - Run `source $HOME/.bashrc` after enabling and disabling to make
                 changes reflect in the current terminal.
 
-                Requirement: Optional
-
         --hhtop
                 Enable a wrapper utility for htop ( https://htop.dev ).
 
-                The utility sets different htoprc files depending on the number of
-                online CPUs and columns in the terminal. Refer to
+                The utility installs htop and sets different htoprc files depending on
+                the number of online CPUs and columns in the terminal. Refer to
                 https://github.com/HarshKapadia2/dotfiles/tree/main/hhtop
                 for detailed information.
+
+                Requirement: Optional
 
                 NOTE:
                 - This utility is not installed by default.
@@ -204,8 +206,6 @@ OPTIONS
                 - Run `source $HOME/.bashrc` after installing and uninstalling to make
                 changes reflect in the current terminal.
 
-                Requirement: Optional
-
         --force-setup
                 For every dotfile in the repository, delete the corresponding
                 dotfile/symlink in the current user's home directory (if it exists) and
@@ -215,13 +215,17 @@ OPTIONS
 
         --delete
                 Remove all dotfile symlinks and delete any related files, like all Vim
-                plugins mentioned in the .vimrc file. It will also attempt to clean the
-                insalled programs (scripts) like 'hhtop'. Packages are not uninstalled.
+                plugins mentioned in the .vimrc ('plugins' type) file. It will also clean
+                the insalled programs (scripts) like 'hhtop', but changes in the .bashrc
+                file will not be removed. Packages are not uninstalled.
 
                 Requirement: Optional
 
-                NOTE: No other option will be executed if this option is mentioned, with
-                the exception of -h or --help.
+                NOTE:
+                - No other option will be executed if this option is mentioned.
+                - All supported symlinked dotfiles will be deleted regardless of whether
+                they were installed by this setup or not.
+                        - See 'Default behaviour' above for supported dotfiles.
 
         -h, --help
                 Print this command usage instruction.

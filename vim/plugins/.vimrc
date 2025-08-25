@@ -63,7 +63,10 @@ set mouse+=a
 " Add an additional keybinding to escape (<ESC>) from insert mode
 inoremap jj <ESC>
 
+
 " ------------------------- Plugins -------------------------------
+
+
 " Install 'vim-plug' plugin manager (if it isn't already installed)
 " https://github.com/junegunn/vim-plug
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -71,17 +74,22 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+
 " Install plugins using 'vim-plug'
 call plug#begin('~/.vim/plugged')
 
+
 " EditorConfig: https://github.com/editorconfig/editorconfig-vim
 Plug 'editorconfig/editorconfig-vim'
+
 " Shell formatting: https://github.com/z0mbix/vim-shfmt
 " Needs `shfmt` package
 Plug 'z0mbix/vim-shfmt'
+
 " ShellCheck: https://github.com/itspriddle/vim-shellcheck
 " Needs `shellcheck` package
 Plug 'itspriddle/vim-shellcheck'
+
 " Prettier: https://github.com/prettier/vim-prettier
 " Needs `prettier` installed globally (which needs `nodejs` installed)
 Plug 'prettier/vim-prettier', {
@@ -89,40 +97,48 @@ Plug 'prettier/vim-prettier', {
 	\ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json',
 	\ 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html']
 	\ }
+
 " Clang Format: https://github.com/rhysd/vim-clang-format
 " Needs `clang-format` package
 Plug 'rhysd/vim-clang-format'
+
 " YouCompleteMe: https://github.com/ycm-core/YouCompleteMe
 " Needs `build-essential`, `cmake` and `python3-dev` packages
 " Needs `bear` package to generate compilation DB for C family languages
 " User needs to be use `bear` manually to generate `compile_commmands.json`
 Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clangd-completer' }
 
+" commentary.vim: https://github.com/tpope/vim-commentary
+Plug 'tpope/vim-commentary'
+
+
 call plug#end()
+
 
 " For 'editorconfig-vim' plugin, to disable the red column at end of editor,
 " generated due to setting `max_line_length` option in `.editorconfig`
 set colorcolumn=0
 
 " 'shfmt' plugin options
-" https://github.com/z0mbix/vim-shfmt
 " Args: https://github.com/mvdan/sh/blob/master/cmd/shfmt/shfmt.1.scd
 let g:shfmt_extra_args = '-bn -ci -sr -kp'
 let g:shfmt_fmt_on_save = 1
 
 " 'vim-prettier' plugin options
-" https://github.com/prettier/vim-prettier
 let g:prettier#autoformat = 1
 let g:prettier#autoformat_require_pragma = 0
 
 " 'vim-clang-format' plugin options
-" https://github.com/rhysd/vim-clang-format
 let g:clang_format#detect_style_file = 1
 let g:clang_format#auto_filetypes = ["c", "cpp"]
 let g:clang_format#auto_format = 1
 
 " 'YouCompleteMe' plugin options
-" https://github.com/ycm-core/YouCompleteMe
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
 
+" 'commentary.vim' plugin
+filetype indent plugin on " Affects entire file and suggested by plugin owner
+" `Ctrl + /` maps to `Ctrl + _` on Linux - use `showkey -a` to check
+xnoremap <C-/> :Commentary<CR>
+xnoremap <C-_> :Commentary<CR>

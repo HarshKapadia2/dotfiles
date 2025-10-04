@@ -1,5 +1,7 @@
 #! /bin/bash
 
+# Idea from https://gist.github.com/mwhite/6887990
+
 set -Eeuo pipefail
 
 readonly FALSE=0

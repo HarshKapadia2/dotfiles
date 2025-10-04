@@ -1,0 +1,46 @@
+#! /bin/bash
+
+set -Eeuo pipefail
+
+readonly FALSE=0
+readonly TRUE=1
+readonly bashrc_path="$HOME/.bashrc"
+
+echo ""
+echo "Setting up Git aliases as Bash aliases..."
+echo ""
+
+if ! command -v git > /dev/null; then
+	echo "Git not installed. Skipping installing Git aliases to Bash."
+	exit 0
+fi
+
+git_aliases=$(git --list-cmds=alias)
+declare -a curr_bash_aliases
+
+if [[ -f "${bashrc_path}" ]]; then
+	mapfile -t curr_bash_aliases <<< "$(grep "alias" "${bashrc_path}")"
+fi
+
+for git_alias in ${git_aliases}; do
+	is_alias_exists=${FALSE}
+	alias_to_add="alias g${git_alias}=\"git ${git_alias}\""
+
+	for curr_bash_alias in "${curr_bash_aliases[@]}"; do
+		if [[ "${alias_to_add}" == "${curr_bash_alias}" ]]; then
+			is_alias_exists=${TRUE}
+			break
+		fi
+	done
+
+	if [[ ${is_alias_exists} -eq ${FALSE} ]]; then
+		echo "${alias_to_add}" >> "${bashrc_path}"
+	fi
+done
+
+echo "
+Done!
+
+NOTE: Please run 'source $HOME/.bashrc' to make changes take effect in the
+      current shell.
+"

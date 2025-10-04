@@ -1,0 +1,31 @@
+[core]
+	editor = vim
+[init]
+	defaultBranch = main
+[user]
+	name = Harsh Kapadia
+	email = contact@harshkapadia.me
+[alias]
+	s = status -s
+	sl = stash list
+	spu = stash
+	spo = stash pop
+	a = add
+	aa = add .
+	ap = add -p
+	cm = commit -m
+	cam = commit -a -m
+	l = log --oneline --graph
+	la = --list-cmds=alias
+	b = branch
+	ba = branch -a
+	bd = branch -d
+	sw = switch
+	f = fetch
+	fo = fetch origin
+	p = push
+	pom = push origin main
+	pu = push -u
+	puo = push -u origin
+	pf = push --force-with-lease
+	d = diff

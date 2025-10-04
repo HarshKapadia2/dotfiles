@@ -1,0 +1,49 @@
+#! /bin/bash
+
+set -Eeuo pipefail
+
+readonly bashrc_path="$HOME/.bashrc"
+
+echo ""
+echo "Removing Git aliases from Bash..."
+echo ""
+
+if ! command -v git > /dev/null; then
+	echo "Git not installed. Skipping git alias installation."
+	exit 0
+fi
+
+if [[ ! -f "${bashrc_path}" ]]; then
+	echo "'$HOME/.bashrc' missing. Skipping git alias installation."
+	exit 0
+fi
+
+git_aliases=$(git --list-cmds=alias)
+
+declare -a curr_bash_aliases
+
+mapfile  -t curr_bash_aliases <<< "$(grep "alias" "${bashrc_path}")"
+
+cp  "${bashrc_path}" "${bashrc_path}-temp-git-aliases"
+
+for git_alias in ${git_aliases}; do
+	bash_alias_to_remove="alias g${git_alias}=\"git ${git_alias}\""
+
+	for curr_bash_alias in "${curr_bash_aliases[@]}"; do
+		if [[ "${bash_alias_to_remove}" == "${curr_bash_alias}" ]]; then
+			grep --invert-match --line-regexp "${bash_alias_to_remove}" "${bashrc_path}" \
+				> "${bashrc_path}-temp-git-aliases"
+			cp "${bashrc_path}-temp-git-aliases" "${bashrc_path}"
+			break
+		fi
+	done
+done
+
+rm "${bashrc_path}-temp-git-aliases"
+
+echo "
+Done!
+
+NOTE: Please run 'source $HOME/.bashrc' to make changes take effect in the
+      current shell.
+"

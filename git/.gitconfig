@@ -16,7 +16,7 @@
 	cm = commit -m
 	cam = commit -a -m
 	l = log --oneline --graph
-	la = --list-cmds=alias
+	la = "!f() { git config --global --list | sed -nE 's/^alias\\.([^=]+)=(.+)$/g\\1 = git \\2/p' | sed -E 's/git !/!/'; }; f"
 	b = branch
 	ba = branch -a
 	bd = branch -d

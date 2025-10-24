@@ -63,3 +63,6 @@ set mouse+=a
 " Add an additional keybinding to escape (<ESC>) from insert mode
 inoremap jj <ESC>
 
+" Prevent '$' from selecting the trailing new line character
+vnoremap $ g_
+

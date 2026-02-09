@@ -16,6 +16,10 @@
 " `vim -u foo`).
 set nocompatible
 
+" Set custom leader key to define custom mappings that don't interfere with
+" built-in commands
+let mapleader = ","
+
 " Turn on syntax highlighting.
 syntax on
 
@@ -65,6 +69,11 @@ inoremap jj <ESC>
 
 " Prevent '$' from selecting the trailing new line character
 vnoremap $ g_
+
+" Toggle colorcolumn in the current (local) buffer
+" Checks the effective colorcolumn value (post global and local value effects)
+" and then sets or unsets the local value
+nnoremap <leader>cc :if &colorcolumn == 80 <Bar> setlocal colorcolumn= <Bar> else <Bar> setlocal colorcolumn=80 <Bar> endif <CR>
 
 
 " ------------------------- Plugins -------------------------------
@@ -118,11 +127,10 @@ Plug 'tpope/vim-commentary'
 call plug#end()
 
 
-" For 'editorconfig-vim' plugin, to disable the red column at end of editor,
-" generated due to setting `max_line_length` option in `.editorconfig`
-set colorcolumn=0
+" 'editorconfig-vim' plugin options
+let g:EditorConfig_max_line_indicator = "none"
 
-" 'shfmt' plugin options
+" 'vim-shfmt' plugin options
 " Args: https://github.com/mvdan/sh/blob/master/cmd/shfmt/shfmt.1.scd
 let g:shfmt_extra_args = '-bn -ci -sr -kp'
 let g:shfmt_fmt_on_save = 1

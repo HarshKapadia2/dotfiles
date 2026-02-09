@@ -1,3 +1,4 @@
 lsp-examples/
 .*.swp
+*.vim
 

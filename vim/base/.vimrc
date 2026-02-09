@@ -16,6 +16,10 @@
 " `vim -u foo`).
 set nocompatible
 
+" Set custom leader key to define custom mappings that don't interfere with
+" built-in commands
+let mapleader = ","
+
 " Turn on syntax highlighting.
 syntax on
 
@@ -65,4 +69,9 @@ inoremap jj <ESC>
 
 " Prevent '$' from selecting the trailing new line character
 vnoremap $ g_
+
+" Toggle colorcolumn in the current (local) buffer
+" Checks the effective colorcolumn value (post global and local value effects)
+" and then sets or unsets the local value
+nnoremap <leader>cc :if &colorcolumn == 80 <Bar> setlocal colorcolumn= <Bar> else <Bar> setlocal colorcolumn=80 <Bar> endif <CR>
 

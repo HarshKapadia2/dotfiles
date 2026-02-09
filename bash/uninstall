@@ -1,0 +1,35 @@
+#! /bin/bash
+
+set -Eeuo pipefail
+
+readonly bashrc_path="$HOME/.bashrc"
+
+echo ""
+echo "Removing Harsh's Bash aliases file..."
+echo ""
+
+if [[ ! -f "${bashrc_path}" ]]; then
+	echo "'$HOME/.bashrc' missing. Skipping Harsh's Bash aliases file removal."
+	exit 0
+fi
+
+# Delete bash aliases file symlink
+if [[ -f "$HOME/.bash_aliases_harsh" ]]; then
+	rm "$HOME/.bash_aliases_harsh"
+fi
+
+# Remove source line from .bashrc
+if [[ "$(grep "source \"\$HOME/.bash_aliases_harsh\"" "${bashrc_path}")" != "" ]]; then
+	# shellcheck disable=SC2016
+	sed -E '/^if \[\[ -f "\$HOME\/\.bash_aliases_harsh" \]\]; then$/,/^fi$/d' \
+		"${bashrc_path}" > "${bashrc_path}-temp-harsh-bash-aliases"
+
+	mv "${bashrc_path}-temp-harsh-bash-aliases" "${bashrc_path}"
+fi
+
+echo "
+Done!
+
+NOTE: Please run 'source $HOME/.bashrc' to make changes take effect in the
+      current shell.
+"

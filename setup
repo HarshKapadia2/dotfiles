@@ -119,13 +119,13 @@ DESCRIPTION
 OPTIONS
 	Default behaviour
 		Symlink dotfiles that arent't already present in the current user's home
-		directory and add Git aliases to the .bashrc file. This behaviour holds
-		unless modified by the options below.
+		directory and source a custom aliases file in the .bashrc file. This
+		behaviour holds unless modified by the options below.
 
 		To force dotfile symlinking, use ${underline_start}--force-setup${underline_end}.
 
-		Dotfiles supported: .clang-format, .editorconfig, .gitconfig,
-		.prettierrc, .tmux.conf, .vimrc ('base' type - check ${underline_start}--vim${underline_end})
+		Dotfiles supported: .bash_aliases_harsh, .clang-format, .editorconfig,
+		.gitconfig, .prettierrc, .tmux.conf, .vimrc ('base' type - check ${underline_start}--vim${underline_end})
 
 	No options
 		Same as 'Default behaviour' above.
@@ -234,18 +234,18 @@ OPTIONS
 		Requirement: Optional
 
 	--delete
-		Remove all dotfile symlinks and delete any related files, like all Vim
-		plugins mentioned in the .vimrc ('plugins' type) file. It will also
-		clean the insalled programs (scripts) like 'hhtop'. Git aliases present
-		in the .bashrc file will be removed, but all other changes in the file
-		will not be removed. Packages are not uninstalled.
+		Remove all symlinks that are linked to files in this repo and delete any
+		related files, like all Vim plugins mentioned in the .vimrc ('plugins'
+		type) file. It will also clean the insalled programs (scripts) like
+		'hhtop'. All other changes in the file will not be removed. Packages are
+		not uninstalled.
 
 		Requirement: Optional
 
 		NOTE:
 		- No other option will be executed if this option is mentioned.
-		- All supported symlinked dotfiles will be deleted regardless of whether
-		they were installed by this setup or not.
+		- All files that can be symlinked from this 'dotfiles' repo will be
+		deleted regardless of whether they were installed by this setup or not.
 			- See 'Default behaviour' above for supported dotfiles.
 
 	-h, --help
@@ -329,10 +329,6 @@ if [[ "${is_delete_dotfiles_setup}" == "${TRUE}" ]]; then
 		fi
 	done
 
-	# Remove Git aliases from Bash
-	# NOTE: This has to be done before removing the .gitconfig symlink
-	"${dotfiles_repo_path}/git/remove-git-aliases-from-bash"
-
 	# Remove .gitconfig symlink
 	if [[ -L "$HOME/.gitconfig" ]]; then
 		echo "Deleting .gitconfig symlink."
@@ -384,6 +380,9 @@ if [[ "${is_delete_dotfiles_setup}" == "${TRUE}" ]]; then
 		cd "${dotfiles_repo_path}"
 		git checkout HEAD -- "${dotfiles_repo_path}/vim/plugins/.vimrc"
 	fi
+
+	# Remove Harsh's Bash aliases
+	"${dotfiles_repo_path}/bash/uninstall"
 
 	echo ""
 	echo "Uninstalling hhtop (if required)..."
@@ -549,8 +548,8 @@ NOTE: Skipped symlinking '.vimrc' as it already exists in '$HOME'. Use the
 	echo "Done!"
 	echo ""
 
-	# Add Git aliases to Bash
-	"${dotfiles_repo_path}/git/add-git-aliases-to-bash"
+	# Add Harsh's Bash aliases
+	"${dotfiles_repo_path}/bash/install"
 fi
 
 # Install/enable PS1 customization

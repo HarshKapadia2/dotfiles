@@ -1,0 +1,43 @@
+#! /bin/bash
+
+set -Eeuo pipefail
+
+readonly bashrc_path="$HOME/.bashrc"
+bash_dotfiles_script_dir_path="$(dirname "$(realpath "$0")")"
+readonly bash_dotfiles_script_dir_path
+
+echo ""
+echo "Adding Harsh's Bash aliases file..."
+echo ""
+
+if [[ ! -f "${bashrc_path}" ]]; then
+	echo "'$HOME/.bashrc' missing. Skipping Harsh's Bash aliases file addition."
+	exit 0
+fi
+
+# Create a copy of .bashrc as a backup
+if [[ ! -f "$HOME/.bashrc_copy" ]]; then
+	cp "${bashrc_path}" "$HOME/.bashrc_copy"
+fi
+
+# Link aliases script
+if [[ ! -f "$HOME/.bash_aliases_harsh" ]]; then
+	ln --symbolic "${bash_dotfiles_script_dir_path}/.bash_aliases_harsh" \
+		"$HOME/.bash_aliases_harsh"
+fi
+
+# Add source command to .bashrc
+if [[ "$(grep "source \"\$HOME/.bash_aliases_harsh\"" "${bashrc_path}")" == "" ]]; then
+	echo "
+if [[ -f \"\$HOME/.bash_aliases_harsh\" ]]; then
+	source \"\$HOME/.bash_aliases_harsh\"
+fi
+" >> "${bashrc_path}"
+fi
+
+echo "
+Done!
+
+NOTE: Please run 'source $HOME/.bashrc' to make changes take effect in the
+      current shell.
+"

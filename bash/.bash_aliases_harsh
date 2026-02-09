@@ -1,0 +1,70 @@
+# Harsh Kapadia's Bash aliases
+# https://github.com/HarshKapadia2/dotfiles
+
+# File listing
+alias lal="ls -alh"
+
+# Update and upgrade
+alias upd="sudo apt-get update"
+alias upg="sudo apt-get upgrade"
+alias upgy="sudo apt-get upgrade -y"
+alias uu="sudo apt-get update && sudo apt-get upgrade"
+alias uuy="sudo apt-get update && sudo apt-get upgrade -y"
+alias uur="sudo apt-get update && sleep 10 && sudo apt-get upgrade -y && sleep 10 && sudo reboot now"
+
+# Networking
+alias ipa="ip a"
+alias ipr="routel"
+alias ipro="ip -c route"
+
+# Tmux
+alias t="tmux"
+alias tl="tmux ls"
+alias ta0="tmux a -t 0"
+alias ta1="tmux a -t 1"
+alias ta2="tmux a -t 2"
+alias ta="ta0"
+
+# Git
+alias gs="git status -s"
+alias gsl="git stash list"
+alias gspu="git stash push"
+alias gspum="git stash push -m"
+alias ga="git add"
+alias gaa="git add ."
+alias gap="git add -p"
+alias gcm="git commit -m"
+alias gcam="git commit -a -m"
+alias gl="git log --oneline --graph"
+alias gb="git branch"
+alias gba="git branch -a"
+alias gbd="git branch -d"
+alias gsw="git switch"
+alias gf="git fetch"
+alias gfo="git fetch origin"
+alias gp="git push"
+alias gpom="git push origin main"
+alias gpu="git push -u"
+alias gpuo="git push -u origin"
+alias gpf="git push --force-with-lease"
+alias gd="git diff"
+
+gspo() {
+	stash_num=0
+
+	if [[ "$1" -ge 0 ]]; then
+		stash_num=$1
+	fi
+
+	git stash pop "stash@{${stash_num}}"
+}
+
+gss() {
+	stash_num=0
+
+	if [[ "$1" -ge 0 ]]; then
+		stash_num=$1
+	fi
+
+	git stash show -p "stash@{${stash_num}}"
+}

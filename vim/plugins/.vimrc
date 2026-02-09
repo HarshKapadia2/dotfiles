@@ -104,10 +104,13 @@ Plug 'itspriddle/vim-shellcheck'
 
 " Prettier: https://github.com/prettier/vim-prettier
 " Needs `prettier` installed globally (which needs `nodejs` installed)
+" `--legacy-peer-deps` npm flag required due to Prettier PHP plugin version
+" mismatch
 Plug 'prettier/vim-prettier', {
-	\ 'do': 'npm i --omit=dev && npm ci --omit=dev',
-	\ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json',
-	\ 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html']
+	\ 'do': 'npm install --omit=dev --legacy-peer-deps',
+	\ 'for': ['javascript', 'javascriptreact', 'typescript', 'typescriptreact',
+	\ 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte',
+	\ 'yaml', 'html']
 	\ }
 
 " Clang Format: https://github.com/rhysd/vim-clang-format

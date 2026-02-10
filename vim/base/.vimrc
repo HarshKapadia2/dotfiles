@@ -73,5 +73,39 @@ vnoremap $ g_
 " Toggle colorcolumn in the current (local) buffer
 " Checks the effective colorcolumn value (post global and local value effects)
 " and then sets or unsets the local value
-nnoremap <leader>cc :if &colorcolumn == 80 <Bar> setlocal colorcolumn= <Bar> else <Bar> setlocal colorcolumn=80 <Bar> endif <CR>
+nnoremap <silent> <leader>cc :if &colorcolumn == 80 <Bar> setlocal colorcolumn= <Bar> else <Bar> setlocal colorcolumn=80 <Bar> endif <CR>
+
+" Make popups scrollable
+" Credits to https://vi.stackexchange.com/questions/37717/is-it-possible-to-scroll-a-popup-via-keyboard
+function! ScrollPopup(scroll_num_lines)
+    let popup_win_ids = popup_list()
+
+    if len(popup_win_ids) == 0
+        return
+    endif
+
+    let popup_posn_properties = popup_getpos(popup_win_ids[0])
+
+    if popup_posn_properties.visible != 1
+        return
+    endif
+
+    let first_line = popup_posn_properties.firstline + a:scroll_num_lines
+    let buf_last_line = str2nr(trim(win_execute(popup_win_ids[0], "echo line('$')")))
+
+    if first_line < 1
+        let first_line = 1
+    elseif popup_posn_properties.lastline + a:scroll_num_lines > buf_last_line
+        let first_line = buf_last_line + popup_posn_properties.firstline - popup_posn_properties.lastline
+    endif
+
+    call popup_setoptions(popup_win_ids[0], {'firstline': first_line})
+endfunction
+
+" Scroll down
+" Normal comments cannot be along the line for mappings. There is some special
+" way to add comments along the line
+nnoremap <silent> <C-j> :call ScrollPopup(3)<CR>
+" Scroll up
+nnoremap <silent> <C-k> :call ScrollPopup(-3)<CR>
 

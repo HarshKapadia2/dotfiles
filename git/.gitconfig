@@ -2,6 +2,8 @@
 	editor = vim
 [init]
 	defaultBranch = main
+[push]
+	autoSetupRemote = true
 [user]
 	name = Harsh Kapadia
 	email = contact@harshkapadia.me

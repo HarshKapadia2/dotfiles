@@ -42,7 +42,7 @@ else
 		cp "${hhtop_dir}/htoprc.2.bkp" "${htoprc_dir}/htoprc"
 	else
 		rm --force "${htoprc_dir}/htoprc"
-		cp "${htoprc_dir}/htoprc.3.bkp" "${htoprc_dir}/htoprc"
+		cp "${hhtop_dir}/htoprc.3.bkp" "${htoprc_dir}/htoprc"
 	fi
 fi
 

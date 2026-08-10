@@ -71,7 +71,7 @@ alias gd="git diff"
 gspo() {
 	stash_num=0
 
-	if [[ "$1" -ge 0 ]]; then
+	if [[ -n "$1" && "$1" -ge 0 ]]; then
 		stash_num=$1
 	fi
 
@@ -81,7 +81,7 @@ gspo() {
 gss() {
 	stash_num=0
 
-	if [[ "$1" -ge 0 ]]; then
+	if [[ -n "$1" && "$1" -ge 0 ]]; then
 		stash_num=$1
 	fi
 

@@ -20,12 +20,28 @@ alias ipr="routel"
 alias ipro="ip -c route"
 
 # Tmux
-alias t="tmux"
-alias tl="tmux ls"
-alias ta0="tmux a -t 0"
-alias ta1="tmux a -t 1"
-alias ta2="tmux a -t 2"
-alias ta="ta0"
+alias t="tmux new-session"
+alias tl="tmux list-sessions"
+
+ta() {
+	session_num=0
+
+	if [[ -n "$1" && "$1" -ge 0 ]]; then
+		session_num=$1
+	fi
+
+	tmux attach-session -t "${session_num}"
+}
+
+tk() {
+	session_num=0
+
+	if [[ -n "$1" && "$1" -ge 0 ]]; then
+		session_num=$1
+	fi
+
+	tmux kill-session -t "${session_num}"
+}
 
 # Git
 alias gs="git status -s"

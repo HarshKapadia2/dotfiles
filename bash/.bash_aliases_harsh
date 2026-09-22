@@ -4,6 +4,9 @@
 # File listing
 alias lal="ls -alh"
 
+# Clear screen
+alias cls="clear"
+
 # Update and upgrade
 alias upd="sudo apt-get update"
 alias upg="sudo apt-get upgrade"
